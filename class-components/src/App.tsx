@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Component } from 'react';
+import ErrorBoundary from "./components/errBoundary/ErrorBoundary.tsx";
+import SearchComponent from "./components/search/SearchComponent.tsx";
+import ResultsComponent from "./components/result/ResultsComponent.tsx";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface AppState {
+  searchTerm: string;
 }
 
-export default App
+class App extends Component<{}, AppState> {
+  constructor(props: {}) {
+    super(props);
+    const savedTerm = localStorage.getItem('searchTerm') || '';
+    this.state = { searchTerm: savedTerm };
+  }
+
+  handleSearch = (searchTerm: string) => {
+    this.setState({ searchTerm });
+  };
+
+  throwError = () => {
+    throw new Error('Test error');
+  };
+
+  render() {
+    return (
+        <ErrorBoundary>
+          <div>
+            <div style={{ height: '20%', borderBottom: '1px solid black' }}>
+              <SearchComponent onSearch={this.handleSearch} />
+              <button onClick={this.throwError}>Throw Error</button>
+            </div>
+            <div style={{ height: '80%', overflowY: 'scroll' }}>
+              <ResultsComponent searchTerm={this.state.searchTerm} />
+            </div>
+          </div>
+        </ErrorBoundary>
+    );
+  }
+}
+
+export default App;
