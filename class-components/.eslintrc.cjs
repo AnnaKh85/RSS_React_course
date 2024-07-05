@@ -22,7 +22,7 @@ module.exports = {
             env: {
                 node: true,
             },
-            files: ['.eslintrc.{js,cjs}', '*.ts', '*.tsx', '*.js', '*.jsx', '*.ts', '*.tsx', '*.js', '*.jsx', '*.html'],
+            files: ['.eslintrc.{js,cjs}', '*.ts', '*.tsx', '*.js', '*.jsx', '*.html'],
             rules: {
                 "react/prop-types": "off",
             },
@@ -31,11 +31,10 @@ module.exports = {
             },
         },
     ],
-
-    plugins: ['react', '@typescript-eslint', 'unused-imports', 'simple-import-sort', 'prettier', "react-compiler"],
+    plugins: ['react', '@typescript-eslint', 'unused-imports', 'simple-import-sort', 'prettier', 'react-compiler'],
     rules: {
         'react/react-in-jsx-scope': 'off',
-        "react-compiler/react-compiler": "error",
+        'react-compiler/react-compiler': 'error',
         'prettier/prettier': [
             'error',
             {
@@ -43,7 +42,6 @@ module.exports = {
             },
         ],
         '@typescript-eslint/consistent-type-imports': 'error',
-
         'simple-import-sort/imports': 'error',
         'simple-import-sort/exports': 'error',
         'unused-imports/no-unused-imports': 'warn',
