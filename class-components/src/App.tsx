@@ -26,11 +26,11 @@ class App extends Component<{}, AppState> {
     return (
         <ErrorBoundary>
           <div>
-            <div style={{ height: '20%', borderBottom: '1px solid black' }}>
+            <div className="search-form">
               <SearchComponent onSearch={this.handleSearch} />
               <button onClick={this.throwError}>Throw Error</button>
             </div>
-            <div style={{ height: '80%', overflowY: 'scroll' }}>
+            <div style={{ height: '80%'}}>
               <ResultsComponent searchTerm={this.state.searchTerm} />
             </div>
           </div>

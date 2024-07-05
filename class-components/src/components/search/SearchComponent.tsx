@@ -1,4 +1,5 @@
 import { Component, ChangeEvent } from 'react';
+import "./search.css"
 
 interface SearchComponentProps {
     onSearch: (searchTerm: string) => void;

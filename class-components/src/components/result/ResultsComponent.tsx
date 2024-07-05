@@ -64,9 +64,9 @@ class ResultsComponent extends Component<ResultsComponentProps, ResultsComponent
         if (error) return <p>{error}</p>;
 
         return (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            <div className="card-container" >
                 {characters.map((character) => (
-                    <div key={character.id} style={{ border: '1px solid #ccc', padding: '1rem', width: '200px' }}>
+                    <div  key={character.id} className="card">
                         <img src={character.image} alt={character.name} style={{ width: '100%' }} />
                         <h2>{character.name}</h2>
                         <p><strong>Status:</strong> {character.status}</p>
