@@ -1,6 +1,6 @@
-import { Component } from 'react';
-import '../search/search.css';
+import React, { Component } from 'react';
 import axios from 'axios';
+import "../search/search.css"
 
 interface Character {
     id: number;
@@ -64,9 +64,9 @@ class ResultsComponent extends Component<ResultsComponentProps, ResultsComponent
         if (error) return <p>{error}</p>;
 
         return (
-            <div className="card-container" >
+            <div className="card-container">
                 {characters.map((character) => (
-                    <div  key={character.id} className="card">
+                    <div key={character.id} className="card">
                         <img src={character.image} alt={character.name} style={{ width: '100%' }} />
                         <h2>{character.name}</h2>
                         <p><strong>Status:</strong> {character.status}</p>

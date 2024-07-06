@@ -1,16 +1,8 @@
 function Fallback() {
     return (
         <div className="fallback-container">
-            <p>Oops, an error occur...</p>
-            <p>Run away from an error!</p>
-            {/*<button*/}
-            {/*    className="button"*/}
-            {/*    onClick={() => {*/}
-            {/*        window.location.reload();*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    Reload*/}
-            {/*</button>*/}
+            <p>Oops, an error occurred...</p>
+            <p>Run away from the error!</p>
         </div>
     );
 }

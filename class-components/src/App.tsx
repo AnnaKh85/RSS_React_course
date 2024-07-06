@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import ErrorBoundary from "./components/errBoundary/ErrorBoundary.tsx";
-import SearchComponent from "./components/search/SearchComponent.tsx";
-import ResultsComponent from "./components/result/ResultsComponent.tsx";
+import ErrorBoundary from './components/errBoundary/ErrorBoundary';
+import SearchComponent from './components/search/SearchComponent';
+import ResultsComponent from './components/result/ResultsComponent';
 
 interface AppState {
   searchTerm: string;
@@ -30,7 +30,7 @@ class App extends Component<{}, AppState> {
               <SearchComponent onSearch={this.handleSearch} />
               <button onClick={this.throwError}>Throw Error</button>
             </div>
-            <div style={{ height: '80%'}}>
+            <div style={{ height: '80%' }}>
               <ResultsComponent searchTerm={this.state.searchTerm} />
             </div>
           </div>
