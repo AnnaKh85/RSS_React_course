@@ -23,3 +23,30 @@ dist-ssr
 *.sln
 *.sw?
 /.vite/
+
+### react template
+.DS_*
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch
+
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+/.vite/
+/dist/
