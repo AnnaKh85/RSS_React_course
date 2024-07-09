@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import "../search/search.css";
-import "./resultComponent.css"
+import "./resultComponent.css";
 import "../pagination/pagination.css";
+import DetailedView from "../detailedView/DetailedView.tsx";
 
 interface Character {
     id: number;
@@ -13,6 +14,7 @@ interface Character {
     gender: string;
     location: { name: string };
     image: string;
+    episode: string[];
 }
 
 interface PageInfo {
@@ -32,6 +34,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState<number>(1);
     const [pageInfo, setPageInfo] = useState<PageInfo | null>(null);
+    const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -43,6 +46,11 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
             setPage(parseInt(pageParam));
         } else {
             setPage(1);
+        }
+
+        const characterIdParam = queryParams.get('characterId');
+        if (characterIdParam) {
+            setSelectedCharacterId(parseInt(characterIdParam));
         }
     }, [location]);
 
@@ -82,28 +90,45 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         navigate(`?page=${newPage}`);
     };
 
+    const handleCharacterClick = (id: number) => {
+        setSelectedCharacterId(id);
+        navigate(`?page=${page}&characterId=${id}`);
+    };
+
+    const handleCloseDetails = () => {
+        setSelectedCharacterId(null);
+        navigate(`?page=${page}`);
+    };
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
     return (
         <div className="result-container">
-            <div className="pagination">
-                <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
-                <span>Page {page}</span>
-                <button onClick={() => handlePageChange(page + 1)} disabled={!pageInfo?.next}>Next</button>
+            <div className="results-list" onClick={handleCloseDetails}>
+                <div className="pagination">
+                    <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
+                    <span>Page {page}</span>
+                    <button onClick={() => handlePageChange(page + 1)} disabled={!pageInfo?.next}>Next</button>
+                </div>
+                <div className="card-container">
+                    {characters.map((character) => (
+                        <div key={character.id} className="card" onClick={(e) => { e.stopPropagation(); handleCharacterClick(character.id); }}>
+                            <img src={character.image} alt={character.name} style={{ width: '100%' }} />
+                            <h2>{character.name}</h2>
+                            <p><strong>Status:</strong> {character.status}</p>
+                            <p><strong>Species:</strong> {character.species}</p>
+                            <p><strong>Gender:</strong> {character.gender}</p>
+                            <p><strong>Location:</strong> {character.location.name}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
-            <div className="card-container">
-                {characters.map((character) => (
-                    <div key={character.id} className="card">
-                        <img src={character.image} alt={character.name} style={{ width: '100%' }} />
-                        <h2>{character.name}</h2>
-                        <p><strong>Status:</strong> {character.status}</p>
-                        <p><strong>Species:</strong> {character.species}</p>
-                        <p><strong>Gender:</strong> {character.gender}</p>
-                        <p><strong>Location:</strong> {character.location.name}</p>
-                    </div>
-                ))}
-            </div>
+            {selectedCharacterId && (
+                <div className="details-section">
+                    <DetailedView characterId={selectedCharacterId} onClose={handleCloseDetails} />
+                </div>
+            )}
         </div>
     );
 };
