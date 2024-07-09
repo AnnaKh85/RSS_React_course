@@ -1,21 +1,33 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SearchPage from '../src/components/search/SearchComponent.tsx';
-import NotFoundPage from '../src/pages/notFoundPage/NotFoundPage.tsx';
+import React, { useState, useEffect } from 'react';
+import ErrorBoundary from './components/errBoundary/ErrorBoundary';
+import SearchComponent from './components/search/SearchComponent';
+import ResultsComponent from './components/result/ResultsComponent';
+import { useSearchTerm } from './hooks/useSearchTerm';
 
-function App() {
-  const handleSearch = (searchTerm: string) => {
-    // Implement your search logic here
-    console.log(`Searching for: ${searchTerm}`);
-  };
+const App: React.FC = () => {
+    const [searchTerm, setSearchTerm] = useSearchTerm('searchTerm', '');
 
-  return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<SearchPage onSearch={handleSearch} />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Router>
-  );
-}
+    const handleSearch = (term: string) => {
+        setSearchTerm(term);
+    };
+
+    const throwError = () => {
+        throw new Error('Test error');
+    };
+
+    return (
+        <ErrorBoundary>
+            <div>
+                <div className="search-form">
+                    <SearchComponent onSearch={handleSearch} />
+                    <button onClick={throwError}>Throw Error</button>
+                </div>
+                <div>
+                    <ResultsComponent searchTerm={searchTerm} />
+                </div>
+            </div>
+        </ErrorBoundary>
+    );
+};
 
 export default App;

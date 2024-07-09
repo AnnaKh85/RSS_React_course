@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './ResultsComponent.css';
-import Pagination from "../pagination/Pagination.tsx";
+import "../search/search.css";
+import "./resultComponent.css"
+import "../pagination/pagination.css";
 
 interface Character {
     id: number;
@@ -19,55 +20,62 @@ interface ResultsComponentProps {
 }
 
 const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
+    const [characters, setCharacters] = useState<Character[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [page, setPage] = useState<number>(1);
+
     const navigate = useNavigate();
     const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const page = parseInt(queryParams.get('page') || '1', 10);
-
-    const [characters, setCharacters] = useState<Character[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const [totalPages, setTotalPages] = useState<number>(1);
 
     useEffect(() => {
-        const fetchCharacters = async () => {
-            setLoading(true);
-            setError(null);
-            const url = searchTerm
-                ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=${page}`
-                : `https://rickandmortyapi.com/api/character?page=${page}`;
+        const queryParams = new URLSearchParams(location.search);
+        const pageParam = queryParams.get('page');
+        if (pageParam) {
+            setPage(parseInt(pageParam));
+        }
+    }, [location]);
 
-            try {
-                const response = await axios.get(url);
-                setCharacters(response.data.results);
-                setTotalPages(response.data.info.pages);
-            } catch (error) {
-                setError('Failed to fetch characters');
-            } finally {
-                setLoading(false);
-            }
-        };
-
+    useEffect(() => {
         fetchCharacters();
     }, [searchTerm, page]);
 
-    const handleItemClick = (id: number) => {
-        navigate(`/?page=${page}&details=${id}`);
+    const fetchCharacters = async () => {
+        setLoading(true);
+        setError(null);
+        const url = searchTerm
+            ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=${page}`
+            : `https://rickandmortyapi.com/api/character?page=${page}`;
+
+        try {
+            const response = await axios.get(url);
+            setCharacters(response.data.results);
+            setLoading(false);
+        } catch (error) {
+            setError('Failed to fetch characters');
+            setLoading(false);
+        }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+        navigate(`?page=${newPage}`);
     };
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="results">
+        <div className="result-container">
+            <div className="pagination">
+                <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
+                <span>Page {page}</span>
+                <button onClick={() => handlePageChange(page + 1)}>Next</button>
+            </div>
             <div className="card-container">
                 {characters.map((character) => (
-                    <div
-                        key={character.id}
-                        className="card"
-                        onClick={() => handleItemClick(character.id)}
-                    >
-                        <img src={character.image} alt={character.name} />
+                    <div key={character.id} className="card">
+                        <img src={character.image} alt={character.name} style={{ width: '100%' }} />
                         <h2>{character.name}</h2>
                         <p><strong>Status:</strong> {character.status}</p>
                         <p><strong>Species:</strong> {character.species}</p>
@@ -76,7 +84,6 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
                     </div>
                 ))}
             </div>
-            <Pagination currentPage={page} totalPages={totalPages} />
         </div>
     );
 };
