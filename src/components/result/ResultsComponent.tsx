@@ -15,6 +15,13 @@ interface Character {
     image: string;
 }
 
+interface PageInfo {
+    count: number;
+    pages: number;
+    next: string | null;
+    prev: string | null;
+}
+
 interface ResultsComponentProps {
     searchTerm: string;
 }
@@ -24,6 +31,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState<number>(1);
+    const [pageInfo, setPageInfo] = useState<PageInfo | null>(null);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -33,12 +41,23 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         const pageParam = queryParams.get('page');
         if (pageParam) {
             setPage(parseInt(pageParam));
+        } else {
+            setPage(1);
         }
     }, [location]);
 
     useEffect(() => {
+        // Navigate to page 1 if search term changes
+        if (location.search.includes('page=1')) {
+            fetchCharacters();
+        } else {
+            navigate(`?page=1`);
+        }
+    }, [searchTerm, navigate]);
+
+    useEffect(() => {
         fetchCharacters();
-    }, [searchTerm, page]);
+    }, [page]);
 
     const fetchCharacters = async () => {
         setLoading(true);
@@ -50,6 +69,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         try {
             const response = await axios.get(url);
             setCharacters(response.data.results);
+            setPageInfo(response.data.info);
             setLoading(false);
         } catch (error) {
             setError('Failed to fetch characters');
@@ -70,7 +90,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
             <div className="pagination">
                 <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
                 <span>Page {page}</span>
-                <button onClick={() => handlePageChange(page + 1)}>Next</button>
+                <button onClick={() => handlePageChange(page + 1)} disabled={!pageInfo?.next}>Next</button>
             </div>
             <div className="card-container">
                 {characters.map((character) => (
