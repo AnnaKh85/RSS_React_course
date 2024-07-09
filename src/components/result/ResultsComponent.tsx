@@ -1,6 +1,8 @@
-import { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import "../search/search.css"
+import { useNavigate, useLocation } from 'react-router-dom';
+import './ResultsComponent.css';
+import Pagination from "../pagination/Pagination.tsx";
 
 interface Character {
     id: number;
@@ -16,58 +18,56 @@ interface ResultsComponentProps {
     searchTerm: string;
 }
 
-interface ResultsComponentState {
-    characters: Character[];
-    loading: boolean;
-    error: string | null;
-}
+const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const page = parseInt(queryParams.get('page') || '1', 10);
 
-class ResultsComponent extends Component<ResultsComponentProps, ResultsComponentState> {
-    constructor(props: ResultsComponentProps) {
-        super(props);
-        this.state = {
-            characters: [],
-            loading: false,
-            error: null,
+    const [characters, setCharacters] = useState<Character[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const [totalPages, setTotalPages] = useState<number>(1);
+
+    useEffect(() => {
+        const fetchCharacters = async () => {
+            setLoading(true);
+            setError(null);
+            const url = searchTerm
+                ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=${page}`
+                : `https://rickandmortyapi.com/api/character?page=${page}`;
+
+            try {
+                const response = await axios.get(url);
+                setCharacters(response.data.results);
+                setTotalPages(response.data.info.pages);
+            } catch (error) {
+                setError('Failed to fetch characters');
+            } finally {
+                setLoading(false);
+            }
         };
-    }
 
-    componentDidMount() {
-        this.fetchCharacters();
-    }
+        fetchCharacters();
+    }, [searchTerm, page]);
 
-    componentDidUpdate(prevProps: ResultsComponentProps) {
-        if (prevProps.searchTerm !== this.props.searchTerm) {
-            this.fetchCharacters();
-        }
-    }
-
-    fetchCharacters = async () => {
-        this.setState({ loading: true, error: null });
-        const { searchTerm } = this.props;
-        const url = searchTerm
-            ? `https://rickandmortyapi.com/api/character?name=${searchTerm}`
-            : 'https://rickandmortyapi.com/api/character';
-
-        try {
-            const response = await axios.get(url);
-            this.setState({ characters: response.data.results, loading: false });
-        } catch (error) {
-            this.setState({ error: 'Failed to fetch characters', loading: false });
-        }
+    const handleItemClick = (id: number) => {
+        navigate(`/?page=${page}&details=${id}`);
     };
 
-    render() {
-        const { characters, loading, error } = this.state;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
 
-        if (loading) return <p>Loading...</p>;
-        if (error) return <p>{error}</p>;
-
-        return (
+    return (
+        <div className="results">
             <div className="card-container">
                 {characters.map((character) => (
-                    <div key={character.id} className="card">
-                        <img src={character.image} alt={character.name} style={{ width: '100%' }} />
+                    <div
+                        key={character.id}
+                        className="card"
+                        onClick={() => handleItemClick(character.id)}
+                    >
+                        <img src={character.image} alt={character.name} />
                         <h2>{character.name}</h2>
                         <p><strong>Status:</strong> {character.status}</p>
                         <p><strong>Species:</strong> {character.species}</p>
@@ -76,8 +76,9 @@ class ResultsComponent extends Component<ResultsComponentProps, ResultsComponent
                     </div>
                 ))}
             </div>
-        );
-    }
-}
+            <Pagination currentPage={page} totalPages={totalPages} />
+        </div>
+    );
+};
 
 export default ResultsComponent;
