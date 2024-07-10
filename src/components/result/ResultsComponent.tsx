@@ -69,32 +69,36 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         fetchCharacters();
     }, [page]);
 
-    const fetchCharacters = async () => {
-        setLoading(true);
-        setError(null);
-        setNotFound(false);
-        const url = searchTerm
-            ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=${page}`
-            : `https://rickandmortyapi.com/api/character?page=${page}`;
+  const fetchCharacters = async () => {
+    setLoading(true);
+    setError(null);
+    setNotFound(false);
+    const url = searchTerm
+        ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=${page}`
+        : `https://rickandmortyapi.com/api/character?page=${page}`;
 
-        try {
-            const response = await axios.get(url);
-            if (response.data.results.length === 0) {
-                setNotFound(true);
-            } else {
-                setCharacters(response.data.results);
-                setPageInfo(response.data.info);
-            }
-            setLoading(false);
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
+    try {
+        const response = await axios.get(url);
+        if (response.data.results.length === 0) {
+            setNotFound(true);
+        } else {
+            setCharacters(response.data.results);
+            setPageInfo(response.data.info);
+        }
+        setLoading(false);
+    } catch (err) {
+        if (axios.isAxiosError(err)) {
+            if (err.response && err.response.status === 404) {
                 setNotFound(true);
             } else {
                 setError('Failed to fetch characters');
             }
-            setLoading(false);
+        } else {
+            setError('An unexpected error occurred');
         }
-    };
+        setLoading(false);
+    }
+};
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);

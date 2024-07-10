@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import img404 from '@assets/404-2.jpeg';
 import './notFoundPage.css';
