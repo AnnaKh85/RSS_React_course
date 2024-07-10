@@ -4,7 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import "../search/search.css";
 import "./resultComponent.css";
 import "../pagination/pagination.css";
-import DetailedView from "../detailedView/DetailedView.tsx";
+import DetailedView from "../detailedView/DetailedView";
+import NotFoundPage from "../../pages/notFoundPage/NotFoundPage";
 
 interface Character {
     id: number;
@@ -35,6 +36,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
     const [page, setPage] = useState<number>(1);
     const [pageInfo, setPageInfo] = useState<PageInfo | null>(null);
     const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
+    const [notFound, setNotFound] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -70,17 +72,26 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
     const fetchCharacters = async () => {
         setLoading(true);
         setError(null);
+        setNotFound(false);
         const url = searchTerm
             ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=${page}`
             : `https://rickandmortyapi.com/api/character?page=${page}`;
 
         try {
             const response = await axios.get(url);
-            setCharacters(response.data.results);
-            setPageInfo(response.data.info);
+            if (response.data.results.length === 0) {
+                setNotFound(true);
+            } else {
+                setCharacters(response.data.results);
+                setPageInfo(response.data.info);
+            }
             setLoading(false);
         } catch (error) {
-            setError('Failed to fetch characters');
+            if (error.response && error.response.status === 404) {
+                setNotFound(true);
+            } else {
+                setError('Failed to fetch characters');
+            }
             setLoading(false);
         }
     };
@@ -102,6 +113,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
+    if (notFound) return <NotFoundPage />;
 
     return (
         <div className="result-container">
