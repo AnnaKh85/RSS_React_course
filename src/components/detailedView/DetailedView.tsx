@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./detailedView.css";
+import Loader from "../loader/Loader.tsx";
 
 interface CharacterDetailsProps {
     characterId: number;
@@ -40,7 +41,7 @@ const DetailedView: React.FC<CharacterDetailsProps> = ({ characterId, onClose })
         }
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Loader />;
     if (error) return <p>{error}</p>;
 
     return (

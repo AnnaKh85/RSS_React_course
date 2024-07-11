@@ -3,6 +3,7 @@ import ErrorBoundary from './components/errBoundary/ErrorBoundary';
 import SearchComponent from './components/search/SearchComponent';
 import ResultsComponent from './components/result/ResultsComponent';
 import { useSearchTerm } from './hooks/useSearchTerm';
+import "../src/components/result/resultComponent.css";
 
 const App: React.FC = () => {
     const [searchTerm, setSearchTerm] = useSearchTerm('searchTerm', '');
@@ -17,7 +18,7 @@ const App: React.FC = () => {
 
     return (
         <ErrorBoundary>
-            <div>
+            <div className="app-container">
                 <div className="search-form">
                     <SearchComponent onSearch={handleSearch} />
                     <button onClick={throwError}>Throw Error</button>

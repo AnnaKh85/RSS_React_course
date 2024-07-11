@@ -6,6 +6,7 @@ import "./resultComponent.css";
 import "../pagination/pagination.css";
 import DetailedView from "../detailedView/DetailedView";
 import NotFoundPage from "../../pages/notFoundPage/NotFoundPage";
+import Loader from "../loader/Loader.tsx";
 
 interface Character {
     id: number;
@@ -118,7 +119,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         navigate(`?page=${page}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Loader />;
     if (error) return <p>{error}</p>;
     if (notFound) return <NotFoundPage />;
 

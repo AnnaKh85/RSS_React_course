@@ -1,10 +1,14 @@
 .results-list {
-    width: 55%;
+    width: 60%;
 }
 
 .details-section {
-    width: 40%;
+    width: 35%;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .character-details button {
