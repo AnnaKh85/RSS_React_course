@@ -2,15 +2,14 @@
 // Make sure the detailed card component correctly displays the detailed card data;
 // Ensure that clicking the close button hides the component.
 
-// src/components/detailedView/DetailedView.test.tsx
-import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import {describe, it, expect, vi, Mocked} from 'vitest';
+import '@testing-library/jest-dom'; // Import the jest-dom matchers
 import axios from 'axios';
 import DetailedView from "../components/detailedView/DetailedView.tsx";
 
 vi.mock('axios');
-const mockedAxios = axios as vi.Mocked<typeof axios>;
+const mockedAxios = axios as Mocked<typeof axios>;
 
 const mockCharacter = {
     id: 1,
@@ -29,10 +28,10 @@ describe('DetailedView', () => {
 
         render(<DetailedView characterId={1} onClose={vi.fn()} />);
 
-        expect(screen.getByText(/loading/i)).toBeInTheDocument();
+        expect(screen.getByTestId('loader-element')).toBeInTheDocument();
 
         await waitFor(() => {
-            expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+            expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
         });
     });
 

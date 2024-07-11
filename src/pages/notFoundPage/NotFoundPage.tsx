@@ -10,7 +10,7 @@ function NotFoundPage() {
     };
 
     return (
-        <div className="layout404">
+        <div className="layout404" data-testid="pageNotFound-element">
             <img className="pic404" src={img404} alt="not found" />
             <h2>404 - PAGE NOT FOUND</h2>
             <p>

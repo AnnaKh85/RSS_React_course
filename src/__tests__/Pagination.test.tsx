@@ -1,9 +1,8 @@
 // Make sure the component updates URL query parameter when page changes.
 // src/components/pagination/Pagination.test.tsx
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useNavigate } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, Mock } from 'vitest';
 import Pagination from "../components/pagination/Pagination.tsx";
 
 vi.mock('react-router-dom', () => ({
@@ -13,7 +12,7 @@ vi.mock('react-router-dom', () => ({
 describe('Pagination', () => {
     it('updates URL query parameter when page changes', () => {
         const mockNavigate = vi.fn();
-        (useNavigate as vi.Mock).mockReturnValue(mockNavigate);
+        (useNavigate as Mock).mockReturnValue(mockNavigate);
 
         render(<Pagination currentPage={1} totalPages={5} />);
 
