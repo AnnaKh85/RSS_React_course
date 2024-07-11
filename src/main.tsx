@@ -1,10 +1,13 @@
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import App from './App';
 import ResultsComponent from "./components/result/ResultsComponent.tsx";
 import NotFoundPage from "./pages/notFoundPage/NotFoundPage.tsx";
 
-ReactDOM.render(
+const rootElement = document.getElementById('root');
+
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
     <Router>
         <Routes>
             <Route path="/" element={<App />}>
@@ -12,6 +15,8 @@ ReactDOM.render(
                 <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
-    </Router>,
-    document.getElementById('root')
-);
+    </Router>
+  );
+} else {
+  console.error('Root element not found');
+}

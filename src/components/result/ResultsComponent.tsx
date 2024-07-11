@@ -54,16 +54,19 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         if (characterIdParam) {
             setSelectedCharacterId(parseInt(characterIdParam));
         }
-    }, [location]);
+    }, []);
 
     useEffect(() => {
-        // Navigate to page 1 if search term changes
-        if (location.search.includes('page=1')) {
-            fetchCharacters();
-        } else {
-            navigate(`?page=1`);
-        }
-    }, [searchTerm, navigate]);
+        fetchCharacters().then(() => {
+            navigate(`?page=1&characterId=${selectedCharacterId || ''}`);
+        });
+
+        // if (location.search.includes('page=1')) {
+        //
+        // } else {
+        //     navigate(`?page=1`);
+        // }
+    }, [searchTerm]);
 
     useEffect(() => {
         fetchCharacters();
@@ -74,7 +77,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
     setError(null);
     setNotFound(false);
     const url = searchTerm
-        ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=${page}`
+        ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=1`
         : `https://rickandmortyapi.com/api/character?page=${page}`;
 
     try {

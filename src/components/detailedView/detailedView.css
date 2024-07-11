@@ -10,3 +10,14 @@
 .character-details button {
     margin-bottom: 10px;
 }
+
+.character-details img {
+    border-radius: 8px;
+}
+
+.character-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
