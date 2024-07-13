@@ -61,12 +61,6 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         fetchCharacters().then(() => {
             navigate(`?page=1&characterId=${selectedCharacterId || ''}`);
         });
-
-        // if (location.search.includes('page=1')) {
-        //
-        // } else {
-        //     navigate(`?page=1`);
-        // }
     }, [searchTerm]);
 
     useEffect(() => {
@@ -124,7 +118,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
     if (notFound) return <NotFoundPage />;
 
     return (
-        <div className="result-container">
+        <div className="result-container" data-testid="results-component">
             <div className="results-list" onClick={handleCloseDetails}>
                 <div className="pagination">
                     <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
@@ -132,8 +126,9 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
                     <button onClick={() => handlePageChange(page + 1)} disabled={!pageInfo?.next}>Next</button>
                 </div>
                 <div className="card-container">
+
                     {characters.map((character) => (
-                        <div key={character.id} className="card" onClick={(e) => { e.stopPropagation(); handleCharacterClick(character.id); }}>
+                        <div key={character.id} className="card" data-testid="card-element" onClick={(e) => { e.stopPropagation(); handleCharacterClick(character.id); }}>
                             <img src={character.image} alt={character.name} style={{ width: '100%' }} />
                             <h2>{character.name}</h2>
                             <p><strong>Status:</strong> {character.status}</p>

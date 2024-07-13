@@ -18,7 +18,7 @@ const App: React.FC = () => {
 
     return (
         <ErrorBoundary>
-            <div className="app-container">
+            <div className="app-container" data-testid="app-component">
                 <div className="search-form">
                     <SearchComponent onSearch={handleSearch}/>
                     <button onClick={throwError}>Throw Error</button>

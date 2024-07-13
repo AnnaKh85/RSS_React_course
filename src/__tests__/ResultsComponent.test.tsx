@@ -1,49 +1,82 @@
-// Verify that the component renders the specified number of cards;
-// Check that an appropriate message is displayed if no cards are present.
-
-import { render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, vi, test, Mock } from 'vitest';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {describe, it, expect, vi} from 'vitest';
+import {render, screen} from '@testing-library/react';
+import axios from 'axios';
+import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import ResultsComponent from "../components/result/ResultsComponent.tsx";
+
 
 vi.mock('axios');
 
-vi.mock('react-router-dom', async () => {
-    const actual = await vi.importActual('react-router-dom');
-    return {
-        ...actual,
-        useNavigate: vi.fn(),
-        useLocation: vi.fn(),
-    };
-});
-vi.mock('../detailedView/DetailedView', () => ({
-    __esModule: true,
-    default: vi.fn(() => <div>DetailedView</div>),
-}));
-vi.mock('../loader/Loader', () => ({
-    __esModule: true,
-    default: vi.fn(() => <div>Loading...</div>),
-}));
-vi.mock('../../pages/notFoundPage/NotFoundPage', () => ({
-    __esModule: true,
-    default: vi.fn(() => <div>Not Found</div>),
-}));
-
-const mockNavigate = useNavigate as Mock;
-const mockLocation = useLocation as Mock;
-
 describe('ResultsComponent', () => {
-    beforeEach(() => {
-        mockLocation.mockReturnValue({ search: '' });
-        mockNavigate.mockImplementation(() => vi.fn());
+    const mockCharacters = [
+        {
+            id: 1,
+            name: 'Rick Sanchez',
+            status: 'Alive',
+            species: 'Human',
+            gender: 'Male',
+            location: {name: 'Earth'},
+            image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+            episode: [],
+        },
+    ];
+
+    const mockPageInfo = {
+        count: 1,
+        pages: 1,
+        next: null,
+        prev: null,
+    };
+
+    it('should render loading state initially', () => {
+        render(
+            <MemoryRouter>
+                <ResultsComponent searchTerm=""/>
+            </MemoryRouter>
+        );
+        expect(screen.getByTestId("loader-element")).toBeInTheDocument();
     });
 
-    test('displays a loading indicator while fetching data', async () => {
-        render(<ResultsComponent searchTerm="test" />);
-        expect(screen.getByTestId('loader-element')).toBeInTheDocument();
-
-        await waitFor(() => {
-            expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
+    it('should render characters after fetching', async () => {
+        (axios.get as jest.Mock).mockResolvedValue({
+            data: {results: mockCharacters, info: mockPageInfo},
         });
+
+        render(
+            <MemoryRouter>
+                <ResultsComponent searchTerm=""/>
+            </MemoryRouter>
+        );
+
+        expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
     });
+
+    it('should handle page change', async () => {
+        (axios.get as jest.Mock).mockResolvedValue({
+            data: {results: mockCharacters, info: mockPageInfo},
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/?page=1']}>
+                <Routes>
+                    <Route path="/" element={<ResultsComponent searchTerm=""/>}/>
+                </Routes>
+            </MemoryRouter>
+        );
+
+        expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
+    });
+
+    it('should not set selectedCharacterId if characterId param is not present', () => {
+        render(
+            <MemoryRouter initialEntries={['/']}>
+                <Routes>
+                    <Route path="/" element={<ResultsComponent searchTerm="" />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        expect(screen.queryByText('Character Details')).not.toBeInTheDocument();
+    });
+
 });

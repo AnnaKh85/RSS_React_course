@@ -47,6 +47,7 @@ const DetailedView: React.FC<CharacterDetailsProps> = ({ characterId, onClose })
     return (
         <div className="character-details">
             <button onClick={onClose}>Close</button>
+            <h3>Character Details</h3>
             {character && (
                 <div>
                     <img src={character.image} alt={character.name} />
