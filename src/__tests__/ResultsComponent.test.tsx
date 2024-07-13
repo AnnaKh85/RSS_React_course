@@ -1,11 +1,12 @@
-import {describe, it, expect, vi} from 'vitest';
-import {render, screen} from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
 import axios from 'axios';
-import {MemoryRouter, Route, Routes} from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ResultsComponent from "../components/result/ResultsComponent.tsx";
 
-
 vi.mock('axios');
+
+const mockedAxios = axios as typeof axios & { get: ReturnType<typeof vi.fn> };
 
 describe('ResultsComponent', () => {
     const mockCharacters = [
@@ -15,7 +16,7 @@ describe('ResultsComponent', () => {
             status: 'Alive',
             species: 'Human',
             gender: 'Male',
-            location: {name: 'Earth'},
+            location: { name: 'Earth' },
             image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
             episode: [],
         },
@@ -31,38 +32,42 @@ describe('ResultsComponent', () => {
     it('should render loading state initially', () => {
         render(
             <MemoryRouter>
-                <ResultsComponent searchTerm=""/>
+                <ResultsComponent searchTerm="" />
             </MemoryRouter>
         );
         expect(screen.getByTestId("loader-element")).toBeInTheDocument();
     });
 
     it('should render characters after fetching', async () => {
-        (axios.get as jest.Mock).mockResolvedValue({
-            data: {results: mockCharacters, info: mockPageInfo},
+        mockedAxios.get.mockResolvedValue({
+            data: { results: mockCharacters, info: mockPageInfo },
         });
 
-        render(
-            <MemoryRouter>
-                <ResultsComponent searchTerm=""/>
-            </MemoryRouter>
-        );
+        await act(async () => {
+            render(
+                <MemoryRouter>
+                    <ResultsComponent searchTerm="" />
+                </MemoryRouter>
+            );
+        });
 
         expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
     });
 
     it('should handle page change', async () => {
-        (axios.get as jest.Mock).mockResolvedValue({
-            data: {results: mockCharacters, info: mockPageInfo},
+        mockedAxios.get.mockResolvedValue({
+            data: { results: mockCharacters, info: mockPageInfo },
         });
 
-        render(
-            <MemoryRouter initialEntries={['/?page=1']}>
-                <Routes>
-                    <Route path="/" element={<ResultsComponent searchTerm=""/>}/>
-                </Routes>
-            </MemoryRouter>
-        );
+        await act(async () => {
+            render(
+                <MemoryRouter initialEntries={['/?page=1']}>
+                    <Routes>
+                        <Route path="/" element={<ResultsComponent searchTerm="" />} />
+                    </Routes>
+                </MemoryRouter>
+            );
+        });
 
         expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
     });
@@ -78,5 +83,4 @@ describe('ResultsComponent', () => {
 
         expect(screen.queryByText('Character Details')).not.toBeInTheDocument();
     });
-
 });
