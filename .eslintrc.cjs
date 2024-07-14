@@ -31,7 +31,7 @@ module.exports = {
             },
         },
     ],
-    plugins: ['react', '@typescript-eslint', 'unused-imports', 'simple-import-sort', 'prettier', 'react-compiler'],
+    plugins: ['react', '@typescript-eslint', 'prettier', 'react-compiler'],
     rules: {
         'react/react-in-jsx-scope': 'off',
         'react-compiler/react-compiler': 'error',
@@ -42,9 +42,6 @@ module.exports = {
             },
         ],
         '@typescript-eslint/consistent-type-imports': 'error',
-        'simple-import-sort/imports': 'error',
-        'simple-import-sort/exports': 'error',
-        'unused-imports/no-unused-imports': 'warn',
         '@typescript-eslint/explicit-member-accessibility': [
             'error',
             {
@@ -56,5 +53,6 @@ module.exports = {
                 },
             },
         ],
+        '@typescript-eslint/no-explicit-any': 'error',
     },
 };

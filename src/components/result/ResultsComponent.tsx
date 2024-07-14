@@ -1,104 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+import { useGetCharactersQuery } from '../../services/characterApi';
+import { setSelectedCharacterId } from '../../app/charactersSlice';
 import "../search/search.css";
 import "./resultComponent.css";
 import "../pagination/pagination.css";
 import DetailedView from "../detailedView/DetailedView";
 import NotFoundPage from "../../pages/notFoundPage/NotFoundPage";
 import Loader from "../loader/Loader.tsx";
-import {Character, PageInfo} from "../../interfaces/interfaces.ts";
 
 interface ResultsComponentProps {
     searchTerm: string;
 }
 
 const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
-    const [characters, setCharacters] = useState<Character[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [page, setPage] = useState<number>(1);
-    const [pageInfo, setPageInfo] = useState<PageInfo | null>(null);
-    const [selectedCharacterId, setSelectedCharacterId] = useState<number | null>(null);
-    const [notFound, setNotFound] = useState(false);
-
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useAppDispatch();
+    const selectedCharacterId = useAppSelector(state => state.characters.selectedCharacterId);
+
+    const queryParams = new URLSearchParams(location.search);
+    const pageParam = queryParams.get('page');
+    const page = pageParam ? parseInt(pageParam) : 1;
+
+    const { data, error, isLoading } = useGetCharactersQuery({ name: searchTerm, page });
 
     useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const pageParam = queryParams.get('page');
-        if (pageParam) {
-            setPage(parseInt(pageParam));
-        } else {
-            setPage(1);
-        }
-
         const characterIdParam = queryParams.get('characterId');
         if (characterIdParam) {
-            setSelectedCharacterId(parseInt(characterIdParam));
+            dispatch(setSelectedCharacterId(parseInt(characterIdParam)));
         }
-    }, []);
+        console.log('location.search: ' + location.search)
+
+    }, [location.search, dispatch]);
 
     useEffect(() => {
-        fetchCharacters().then(() => {
-            navigate(`?page=1&characterId=${selectedCharacterId || ''}`);
-        });
-    }, [searchTerm]);
-
-    useEffect(() => {
-        fetchCharacters();
-    }, [page]);
-
-  const fetchCharacters = async () => {
-    setLoading(true);
-    setError(null);
-    setNotFound(false);
-    const url = searchTerm
-        ? `https://rickandmortyapi.com/api/character?name=${searchTerm}&page=1`
-        : `https://rickandmortyapi.com/api/character?page=${page}`;
-
-    try {
-        const response = await axios.get(url);
-        if (response.data.results.length === 0) {
-            setNotFound(true);
-        } else {
-            setCharacters(response.data.results);
-            setPageInfo(response.data.info);
+        if (!queryParams.has('page') || queryParams.get('name') !== searchTerm) {
+            navigate(`?name=${searchTerm}&page=1`);
         }
-        setLoading(false);
-    } catch (err) {
-        if (axios.isAxiosError(err)) {
-            if (err.response && err.response.status === 404) {
-                setNotFound(true);
-            } else {
-                setError('Failed to fetch characters');
-            }
-        } else {
-            setError('An unexpected error occurred');
-        }
-        setLoading(false);
-    }
-};
+    }, [searchTerm, navigate, queryParams]);
 
     const handlePageChange = (newPage: number) => {
-        setPage(newPage);
-        navigate(`?page=${newPage}`);
+        console.log('Page: ' + newPage);
+        navigate(`?name=${searchTerm}&page=${newPage}`);
     };
 
     const handleCharacterClick = (id: number) => {
-        setSelectedCharacterId(id);
-        navigate(`?page=${page}&characterId=${id}`);
+        dispatch(setSelectedCharacterId(id));
+        navigate(`?name=${searchTerm}&page=${page}&characterId=${id}`);
     };
 
     const handleCloseDetails = () => {
-        setSelectedCharacterId(null);
-        navigate(`?page=${page}`);
+        dispatch(setSelectedCharacterId(null));
     };
 
-    if (loading) return <Loader />;
-    if (error) return <p>{error}</p>;
-    if (notFound) return <NotFoundPage />;
+    if (isLoading) return <Loader />;
+    if (error) return <p>Failed to fetch characters</p>;
+    if (data?.results.length === 0) return <NotFoundPage />;
 
     return (
         <div className="result-container" data-testid="results-component">
@@ -106,12 +65,14 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
                 <div className="pagination">
                     <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
                     <span>Page {page}</span>
-                    <button onClick={() => handlePageChange(page + 1)} disabled={!pageInfo?.next}>Next</button>
+                    <button onClick={() => handlePageChange(page + 1)} disabled={!data?.info.next}>Next</button>
                 </div>
                 <div className="card-container">
-
-                    {characters.map((character) => (
-                        <div key={character.id} className="card" data-testid="card-element" onClick={(e) => { e.stopPropagation(); handleCharacterClick(character.id); }}>
+                    {data?.results.map((character) => (
+                        <div key={character.id} className="card" data-testid="card-element" onClick={(e) => {
+                            e.stopPropagation();
+                            handleCharacterClick(character.id);
+                        }}>
                             <img src={character.image} alt={character.name} style={{ width: '100%' }} />
                             <h2>{character.name}</h2>
                             <p><strong>Status:</strong> {character.status}</p>

@@ -1,10 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
-import App from "../App.tsx";
-import ResultsComponent from "../components/result/ResultsComponent.tsx";
-import NotFoundPage from "../pages/notFoundPage/NotFoundPage.tsx";
-
+import App from '../App.tsx';
+import ResultsComponent from '../components/result/ResultsComponent.tsx';
+import NotFoundPage from '../pages/notFoundPage/NotFoundPage.tsx';
 
 describe('Routing and Rendering', () => {
   it('renders the App component for the root path', () => {
@@ -13,7 +12,7 @@ describe('Routing and Rendering', () => {
         <Routes>
           <Route path="/" element={<App />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByTestId('app-component')).toBeInTheDocument();
   });
@@ -24,7 +23,7 @@ describe('Routing and Rendering', () => {
         <Routes>
           <Route path="search" element={<ResultsComponent searchTerm="" />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByTestId('results-component')).toBeInTheDocument();
   });
@@ -35,7 +34,7 @@ describe('Routing and Rendering', () => {
         <Routes>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByTestId('pageNotFound-element')).toBeInTheDocument();
   });

@@ -1,112 +1,113 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, Mocked } from 'vitest';
+import type { Mocked } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom'; // Import the jest-dom matchers
 import axios from 'axios';
-import DetailedView from "../components/detailedView/DetailedView.tsx";
+import DetailedView from '../components/detailedView/DetailedView.tsx';
 
 vi.mock('axios');
 const mockedAxios = axios as Mocked<typeof axios>;
 
 const mockCharacter = {
-    id: 1,
-    name: 'Rick Sanchez',
-    status: 'Alive',
-    species: 'Human',
-    gender: 'Male',
-    location: { name: 'Earth (C-137)' },
-    image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-    episode: ['https://rickandmortyapi.com/api/episode/1'],
+  id: 1,
+  name: 'Rick Sanchez',
+  status: 'Alive',
+  species: 'Human',
+  gender: 'Male',
+  location: { name: 'Earth (C-137)' },
+  image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+  episode: ['https://rickandmortyapi.com/api/episode/1'],
 };
 
 describe('DetailedView', () => {
-    it('displays a loading indicator while fetching data', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
+  it('displays a loading indicator while fetching data', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
 
-        render(<DetailedView characterId={1} onClose={vi.fn()} />);
+    render(<DetailedView characterId={1} onClose={vi.fn()} />);
 
-        expect(screen.getByTestId('loader-element')).toBeInTheDocument();
+    expect(screen.getByTestId('loader-element')).toBeInTheDocument();
 
-        await waitFor(() => {
-            expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
-        });
+    await waitFor(() => {
+      expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
+    });
+  });
+
+  it('correctly displays the detailed card data', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
+
+    render(<DetailedView characterId={1} onClose={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
     });
 
-    it('correctly displays the detailed card data', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
+    expect(screen.getByText(mockCharacter.status)).toBeInTheDocument();
+    expect(screen.getByText(mockCharacter.species)).toBeInTheDocument();
+    expect(screen.getByText(mockCharacter.gender)).toBeInTheDocument();
+    expect(screen.getByText(mockCharacter.location.name)).toBeInTheDocument();
+    expect(screen.getByRole('img')).toHaveAttribute('src', mockCharacter.image);
+    mockCharacter.episode.forEach((ep) => {
+      expect(screen.getByText(ep)).toBeInTheDocument();
+    });
+  });
 
-        render(<DetailedView characterId={1} onClose={vi.fn()} />);
+  it('hides the component when the close button is clicked', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
 
-        await waitFor(() => {
-            expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
-        });
+    const handleClose = vi.fn();
 
-        expect(screen.getByText(mockCharacter.status)).toBeInTheDocument();
-        expect(screen.getByText(mockCharacter.species)).toBeInTheDocument();
-        expect(screen.getByText(mockCharacter.gender)).toBeInTheDocument();
-        expect(screen.getByText(mockCharacter.location.name)).toBeInTheDocument();
-        expect(screen.getByRole('img')).toHaveAttribute('src', mockCharacter.image);
-        mockCharacter.episode.forEach((ep) => {
-            expect(screen.getByText(ep)).toBeInTheDocument();
-        });
+    render(<DetailedView characterId={1} onClose={handleClose} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
     });
 
-    it('hides the component when the close button is clicked', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
+    const closeButton = screen.getByText(/close/i);
+    fireEvent.click(closeButton);
 
-        const handleClose = vi.fn();
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
 
-        render(<DetailedView characterId={1} onClose={handleClose} />);
+  it('displays an error message when the API call fails', async () => {
+    mockedAxios.get.mockRejectedValueOnce(new Error('API call failed'));
 
-        await waitFor(() => {
-            expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
-        });
+    render(<DetailedView characterId={1} onClose={vi.fn()} />);
 
-        const closeButton = screen.getByText(/close/i);
-        fireEvent.click(closeButton);
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch character details')).toBeInTheDocument();
+    });
+  });
 
-        expect(handleClose).toHaveBeenCalledTimes(1);
+  // it('handles the case where no character data is available', async () => {
+  //     mockedAxios.get.mockResolvedValueOnce({ data: {} });
+  //
+  //     render(<DetailedView characterId={1} onClose={vi.fn()} />);
+  //
+  //     await waitFor(() => {
+  //         expect(screen.queryByText(mockCharacter.name)).not.toBeInTheDocument();
+  //     });
+  // });
+
+  it('transitions between loading, error, and data loaded states', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
+
+    const { rerender } = render(<DetailedView characterId={1} onClose={vi.fn()} />);
+
+    expect(screen.getByTestId('loader-element')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
+      expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
     });
 
-    it('displays an error message when the API call fails', async () => {
-        mockedAxios.get.mockRejectedValueOnce(new Error('API call failed'));
+    mockedAxios.get.mockRejectedValueOnce(new Error('API call failed'));
+    rerender(<DetailedView characterId={2} onClose={vi.fn()} />);
 
-        render(<DetailedView characterId={1} onClose={vi.fn()} />);
+    expect(screen.getByTestId('loader-element')).toBeInTheDocument();
 
-        await waitFor(() => {
-            expect(screen.getByText('Failed to fetch character details')).toBeInTheDocument();
-        });
+    await waitFor(() => {
+      expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
+      expect(screen.getByText('Failed to fetch character details')).toBeInTheDocument();
     });
-
-    // it('handles the case where no character data is available', async () => {
-    //     mockedAxios.get.mockResolvedValueOnce({ data: {} });
-    //
-    //     render(<DetailedView characterId={1} onClose={vi.fn()} />);
-    //
-    //     await waitFor(() => {
-    //         expect(screen.queryByText(mockCharacter.name)).not.toBeInTheDocument();
-    //     });
-    // });
-
-    it('transitions between loading, error, and data loaded states', async () => {
-        mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
-
-        const { rerender } = render(<DetailedView characterId={1} onClose={vi.fn()} />);
-
-        expect(screen.getByTestId('loader-element')).toBeInTheDocument();
-
-        await waitFor(() => {
-            expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
-            expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
-        });
-
-        mockedAxios.get.mockRejectedValueOnce(new Error('API call failed'));
-        rerender(<DetailedView characterId={2} onClose={vi.fn()} />);
-
-        expect(screen.getByTestId('loader-element')).toBeInTheDocument();
-
-        await waitFor(() => {
-            expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
-            expect(screen.getByText('Failed to fetch character details')).toBeInTheDocument();
-        });
-    });
+  });
 });
