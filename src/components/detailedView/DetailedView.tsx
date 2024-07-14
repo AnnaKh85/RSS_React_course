@@ -2,21 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./detailedView.css";
 import Loader from "../loader/Loader.tsx";
+import {Character} from "../../interfaces/interfaces.ts";
 
 interface CharacterDetailsProps {
     characterId: number;
     onClose: () => void;
-}
-
-interface Character {
-    id: number;
-    name: string;
-    status: string;
-    species: string;
-    gender: string;
-    location: { name: string };
-    image: string;
-    episode: string[];
 }
 
 const DetailedView: React.FC<CharacterDetailsProps> = ({ characterId, onClose }) => {
