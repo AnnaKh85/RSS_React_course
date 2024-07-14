@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { useGetCharactersQuery } from '../../services/characterApi';
-import { setSelectedCharacterId } from '../../app/charactersSlice';
+import { setSelectedCharacterId, addSelectedItem, removeSelectedItem } from '../../app/charactersSlice';
 import "../search/search.css";
 import "./resultComponent.css";
 import "../pagination/pagination.css";
@@ -19,6 +19,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
     const location = useLocation();
     const dispatch = useAppDispatch();
     const selectedCharacterId = useAppSelector(state => state.characters.selectedCharacterId);
+    const selectedItems = useAppSelector(state => state.characters.selectedItems);
 
     const queryParams = new URLSearchParams(location.search);
     const pageParam = queryParams.get('page');
@@ -53,6 +54,14 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         dispatch(setSelectedCharacterId(null));
     };
 
+    const handleCheckboxChange = (id: number, isChecked: boolean) => {
+        if (isChecked) {
+            dispatch(addSelectedItem(id));
+        } else {
+            dispatch(removeSelectedItem(id));
+        }
+    };
+
     if (isLoading) return <Loader />;
     if (error) return <p>Failed to fetch characters</p>;
     if (data?.results.length === 0) return <NotFoundPage />;
@@ -71,6 +80,14 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
                             e.stopPropagation();
                             handleCharacterClick(character.id);
                         }}>
+                            <input
+                                className="selected-character-checkbox"
+                                type="checkbox"
+                                checked={selectedItems.includes(character.id)}
+                                onChange={(e) => handleCheckboxChange(character.id, e.target.checked)}
+                                onClick={(e) => e.stopPropagation()}
+                                placeholder="Select Character"
+                            />
                             <img src={character.image} alt={character.name} style={{ width: '100%' }} />
                             <h2>{character.name}</h2>
                             <p><strong>Status:</strong> {character.status}</p>

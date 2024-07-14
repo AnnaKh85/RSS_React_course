@@ -1,12 +1,13 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface CharactersState {
+interface CharacterState {
   selectedCharacterId: number | null;
+  selectedItems: number[];
 }
 
-const initialState: CharactersState = {
+const initialState: CharacterState = {
   selectedCharacterId: null,
+  selectedItems: [],
 };
 
 const charactersSlice = createSlice({
@@ -16,8 +17,16 @@ const charactersSlice = createSlice({
     setSelectedCharacterId(state, action: PayloadAction<number | null>) {
       state.selectedCharacterId = action.payload;
     },
+    addSelectedItem(state, action: PayloadAction<number>) {
+      if (!state.selectedItems.includes(action.payload)) {
+        state.selectedItems.push(action.payload);
+      }
+    },
+    removeSelectedItem(state, action: PayloadAction<number>) {
+      state.selectedItems = state.selectedItems.filter(id => id !== action.payload);
+    },
   },
 });
 
-export const { setSelectedCharacterId } = charactersSlice.actions;
+export const { setSelectedCharacterId, addSelectedItem, removeSelectedItem } = charactersSlice.actions;
 export default charactersSlice.reducer;
