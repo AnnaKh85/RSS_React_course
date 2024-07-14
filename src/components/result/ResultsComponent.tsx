@@ -31,7 +31,6 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         if (characterIdParam) {
             dispatch(setSelectedCharacterId(parseInt(characterIdParam)));
         }
-        console.log('location.search: ' + location.search)
 
     }, [location.search, dispatch]);
 
@@ -42,7 +41,6 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
     }, [searchTerm, navigate, queryParams]);
 
     const handlePageChange = (newPage: number) => {
-        console.log('Page: ' + newPage);
         navigate(`?name=${searchTerm}&page=${newPage}`);
     };
 
