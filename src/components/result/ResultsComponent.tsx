@@ -85,22 +85,12 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
 
     return (
         <div className="result-container" data-testid="results-component">
-
             <div className="results-list" onClick={handleCloseDetails}>
                 <div className="pagination">
                     <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
                     <span>Page {page}</span>
                     <button onClick={() => handlePageChange(page + 1)} disabled={!data?.info.next}>Next</button>
                 </div>
-
-                {selectedItems.length > 0 && (
-                    <div className="flyout">
-                        <p>{selectedItems.length} items selected</p>
-                        <button onClick={handleUnselectAll}>Unselect All</button>
-                        <button onClick={handleDownload}>Download</button>
-                    </div>
-                )}
-
                 <div className="card-container">
                     {data?.results.map((character) => (
                         <div key={character.id} className="card" data-testid="card-element" onClick={(e) => {
@@ -123,6 +113,13 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
                         </div>
                     ))}
                 </div>
+                {selectedItems.length > 0 && (
+                    <div className="flyout">
+                        <p>{selectedItems.length} items selected</p>
+                        <button onClick={handleUnselectAll}>Unselect All</button>
+                        <button onClick={handleDownload}>Download</button>
+                    </div>
+                )}
             </div>
             {selectedCharacterId && (
                 <div className="details-section">
