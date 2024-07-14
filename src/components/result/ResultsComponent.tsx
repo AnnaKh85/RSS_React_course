@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { useGetCharactersQuery } from '../../services/characterApi';
-import { setSelectedCharacterId, addSelectedItem, removeSelectedItem } from '../../app/charactersSlice';
+import { setSelectedCharacterId, addSelectedItem, removeSelectedItem, clearSelectedItems } from '../../app/charactersSlice';
 import "../search/search.css";
 import "./resultComponent.css";
 import "../pagination/pagination.css";
 import DetailedView from "../detailedView/DetailedView";
 import NotFoundPage from "../../pages/notFoundPage/NotFoundPage";
 import Loader from "../loader/Loader.tsx";
+import { saveAs } from "file-saver";
 
 interface ResultsComponentProps {
     searchTerm: string;
@@ -62,18 +63,44 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
         }
     };
 
+    const handleUnselectAll = () => {
+        dispatch(clearSelectedItems());
+    };
+
+    const handleDownload = () => {
+        if (!data) return;
+
+        const selectedCharacters = data.results.filter(character => selectedItems.includes(character.id));
+        const csvContent = selectedCharacters.map(character =>
+            `${character.id},${character.name},${character.status},${character.species},${character.gender},${character.location.name},${character.url}`
+        ).join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        saveAs(blob, `${selectedItems.length}_characters.csv`);
+    };
+
     if (isLoading) return <Loader />;
     if (error) return <p>Failed to fetch characters</p>;
     if (data?.results.length === 0) return <NotFoundPage />;
 
     return (
         <div className="result-container" data-testid="results-component">
+
             <div className="results-list" onClick={handleCloseDetails}>
                 <div className="pagination">
                     <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
                     <span>Page {page}</span>
                     <button onClick={() => handlePageChange(page + 1)} disabled={!data?.info.next}>Next</button>
                 </div>
+
+                {selectedItems.length > 0 && (
+                    <div className="flyout">
+                        <p>{selectedItems.length} items selected</p>
+                        <button onClick={handleUnselectAll}>Unselect All</button>
+                        <button onClick={handleDownload}>Download</button>
+                    </div>
+                )}
+
                 <div className="card-container">
                     {data?.results.map((character) => (
                         <div key={character.id} className="card" data-testid="card-element" onClick={(e) => {
@@ -86,7 +113,6 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
                                 checked={selectedItems.includes(character.id)}
                                 onChange={(e) => handleCheckboxChange(character.id, e.target.checked)}
                                 onClick={(e) => e.stopPropagation()}
-                                placeholder="Select Character"
                             />
                             <img src={character.image} alt={character.name} style={{ width: '100%' }} />
                             <h2>{character.name}</h2>

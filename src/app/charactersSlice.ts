@@ -25,8 +25,11 @@ const charactersSlice = createSlice({
     removeSelectedItem(state, action: PayloadAction<number>) {
       state.selectedItems = state.selectedItems.filter(id => id !== action.payload);
     },
+    clearSelectedItems(state) {
+      state.selectedItems = [];
+    },
   },
 });
 
-export const { setSelectedCharacterId, addSelectedItem, removeSelectedItem } = charactersSlice.actions;
+export const { setSelectedCharacterId, addSelectedItem, removeSelectedItem, clearSelectedItems } = charactersSlice.actions;
 export default charactersSlice.reducer;
