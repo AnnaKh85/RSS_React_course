@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useContext, useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { useGetCharactersQuery } from '../../services/characterApi';

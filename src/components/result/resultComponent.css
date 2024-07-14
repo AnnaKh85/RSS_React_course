@@ -21,8 +21,6 @@
     cursor: pointer;
     width: 100%;
     margin: 0 auto 10px;
-
-    /*width: 20px;*/
     height: 20px;
     accent-color: #61dafbaa;
     transition: transform 0.2s;
@@ -67,3 +65,30 @@
 .flyout button:hover {
     background-color: #535bf2;
 }
+
+.app-container.light {
+    background-color: white;
+    color: #242424;
+}
+
+.app-container.light span{
+    color: #242424;
+}
+
+.app-container.dark span{
+    color: white;
+}
+
+.app-container.light label{
+    color: #242424;
+}
+
+.app-container.dark label{
+    color: white;
+}
+
+.app-container.dark {
+    background-color: #242424;
+    color: white;
+}
+
