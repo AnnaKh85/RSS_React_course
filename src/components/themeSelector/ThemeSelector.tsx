@@ -10,7 +10,7 @@ const ThemeSelector: React.FC = () => {
     };
 
     return (
-        <div className="theme-selector">
+        <div className="theme-selector" data-testid="theme-provider">
             <label htmlFor="theme">Select Theme: </label>
             <select id="theme" value={theme} onChange={handleThemeChange}>
                 <option value="light">Light</option>
