@@ -9,7 +9,7 @@ import { useGetCharactersQuery } from '../services/characterApi';
 vi.mock('../services/characterApi');
 
 const mockStore = configureStore([]);
-const mockedUseGetCharactersQuery = useGetCharactersQuery as jest.Mock;
+const mockedUseGetCharactersQuery = useGetCharactersQuery as vi.Mock;
 
 describe('ResultsComponent', () => {
   const mockCharacters = [

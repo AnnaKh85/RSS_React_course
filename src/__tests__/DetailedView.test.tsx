@@ -5,7 +5,7 @@ import DetailedView from '../components/detailedView/DetailedView.tsx';
 import { useGetCharacterByIdQuery } from "../services/characterApi.ts";
 
 vi.mock('../services/characterApi');
-const mockedUseGetCharacterByIdQuery = useGetCharacterByIdQuery as jest.Mock;
+const mockedUseGetCharacterByIdQuery = useGetCharacterByIdQuery as vi.Mock;
 
 const mockCharacter = {
   id: 1,
