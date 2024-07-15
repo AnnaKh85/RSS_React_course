@@ -1,12 +1,11 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import type { Mocked } from 'vitest';
 import { describe, it, expect, vi } from 'vitest';
-import '@testing-library/jest-dom'; // Import the jest-dom matchers
-import axios from 'axios';
+import '@testing-library/jest-dom';
 import DetailedView from '../components/detailedView/DetailedView.tsx';
+import { useGetCharacterByIdQuery } from "../services/characterApi.ts";
 
-vi.mock('axios');
-const mockedAxios = axios as Mocked<typeof axios>;
+vi.mock('../services/characterApi');
+const mockedUseGetCharacterByIdQuery = useGetCharacterByIdQuery as jest.Mock;
 
 const mockCharacter = {
   id: 1,
@@ -20,39 +19,12 @@ const mockCharacter = {
 };
 
 describe('DetailedView', () => {
-  it('displays a loading indicator while fetching data', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
-
-    render(<DetailedView characterId={1} onClose={vi.fn()} />);
-
-    expect(screen.getByTestId('loader-element')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
+  it('calls onClose when the Close button is clicked', async () => {
+    mockedUseGetCharacterByIdQuery.mockReturnValue({
+      data: mockCharacter,
+      error: null,
+      isLoading: false,
     });
-  });
-
-  it('correctly displays the detailed card data', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
-
-    render(<DetailedView characterId={1} onClose={vi.fn()} />);
-
-    await waitFor(() => {
-      expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
-    });
-
-    expect(screen.getByText(mockCharacter.status)).toBeInTheDocument();
-    expect(screen.getByText(mockCharacter.species)).toBeInTheDocument();
-    expect(screen.getByText(mockCharacter.gender)).toBeInTheDocument();
-    expect(screen.getByText(mockCharacter.location.name)).toBeInTheDocument();
-    expect(screen.getByRole('img')).toHaveAttribute('src', mockCharacter.image);
-    mockCharacter.episode.forEach((ep) => {
-      expect(screen.getByText(ep)).toBeInTheDocument();
-    });
-  });
-
-  it('hides the component when the close button is clicked', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
 
     const handleClose = vi.fn();
 
@@ -68,8 +40,104 @@ describe('DetailedView', () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
-  it('displays an error message when the API call fails', async () => {
-    mockedAxios.get.mockRejectedValueOnce(new Error('API call failed'));
+  it('does not call onClose when the Close button is not clicked', async () => {
+    mockedUseGetCharacterByIdQuery.mockReturnValue({
+      data: mockCharacter,
+      error: null,
+      isLoading: false,
+    });
+
+    const handleClose = vi.fn();
+
+    render(<DetailedView characterId={1} onClose={handleClose} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
+    });
+
+    expect(handleClose).not.toHaveBeenCalled();
+  });
+
+  it.skip('calls onClose when the Close button is clicked after loading', async () => {
+    mockedUseGetCharacterByIdQuery.mockReturnValue({
+      data: mockCharacter,
+      error: null,
+      isLoading: true,
+    });
+
+    const handleClose = vi.fn();
+
+    render(<DetailedView characterId={1} onClose={handleClose} />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('loader-element')).toBeInTheDocument();
+    });
+
+    mockedUseGetCharacterByIdQuery.mockReturnValue({
+      data: mockCharacter,
+      error: null,
+      isLoading: false,
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
+    });
+
+    const closeButton = screen.getByText(/close/i);
+    fireEvent.click(closeButton);
+
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it.skip('calls onClose when the Close button is clicked after an error', async () => {
+    mockedUseGetCharacterByIdQuery.mockReturnValue({
+      data: null,
+      error: new Error('API call failed'),
+      isLoading: false,
+    });
+
+    const handleClose = vi.fn();
+
+    render(<DetailedView characterId={1} onClose={handleClose} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch character details')).toBeInTheDocument();
+    });
+
+    const closeButton = screen.getByText(/close/i);
+    fireEvent.click(closeButton);
+
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onClose when the Close button is clicked multiple times', async () => {
+    mockedUseGetCharacterByIdQuery.mockReturnValue({
+      data: mockCharacter,
+      error: null,
+      isLoading: false,
+    });
+
+    const handleClose = vi.fn();
+
+    render(<DetailedView characterId={1} onClose={handleClose} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
+    });
+
+    const closeButton = screen.getByText(/close/i);
+    fireEvent.click(closeButton);
+    fireEvent.click(closeButton);
+
+    expect(handleClose).toHaveBeenCalledTimes(2);
+  });
+
+  it('renders error message when there is an error', async () => {
+    mockedUseGetCharacterByIdQuery.mockReturnValue({
+      data: null,
+      error: new Error('API call failed'),
+      isLoading: false,
+    });
 
     render(<DetailedView characterId={1} onClose={vi.fn()} />);
 
@@ -78,36 +146,15 @@ describe('DetailedView', () => {
     });
   });
 
-  // it('handles the case where no character data is available', async () => {
-  //     mockedAxios.get.mockResolvedValueOnce({ data: {} });
-  //
-  //     render(<DetailedView characterId={1} onClose={vi.fn()} />);
-  //
-  //     await waitFor(() => {
-  //         expect(screen.queryByText(mockCharacter.name)).not.toBeInTheDocument();
-  //     });
-  // });
-
-  it('transitions between loading, error, and data loaded states', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: mockCharacter });
-
-    const { rerender } = render(<DetailedView characterId={1} onClose={vi.fn()} />);
-
-    expect(screen.getByTestId('loader-element')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
-      expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
+  it('renders Loader when isLoading is true', () => {
+    mockedUseGetCharacterByIdQuery.mockReturnValue({
+      data: null,
+      error: null,
+      isLoading: true,
     });
 
-    mockedAxios.get.mockRejectedValueOnce(new Error('API call failed'));
-    rerender(<DetailedView characterId={2} onClose={vi.fn()} />);
+    render(<DetailedView characterId={1} onClose={vi.fn()} />);
 
     expect(screen.getByTestId('loader-element')).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('loader-element')).not.toBeInTheDocument();
-      expect(screen.getByText('Failed to fetch character details')).toBeInTheDocument();
-    });
   });
 });

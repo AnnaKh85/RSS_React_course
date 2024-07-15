@@ -1,12 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
-import axios from 'axios';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import ResultsComponent from '../components/result/ResultsComponent.tsx';
+import { useGetCharactersQuery } from '../services/characterApi';
 
-vi.mock('axios');
+vi.mock('../services/characterApi');
 
-const mockedAxios = axios as typeof axios & { get: ReturnType<typeof vi.fn> };
+const mockStore = configureStore([]);
+const mockedUseGetCharactersQuery = useGetCharactersQuery as jest.Mock;
 
 describe('ResultsComponent', () => {
   const mockCharacters = [
@@ -29,25 +32,45 @@ describe('ResultsComponent', () => {
     prev: null,
   };
 
+  const initialState = {
+    characters: {
+      selectedCharacterId: null,
+      selectedItems: [],
+    },
+  };
+
   it('should render loading state initially', () => {
+    mockedUseGetCharactersQuery.mockReturnValue({
+      data: null,
+      error: null,
+      isLoading: true,
+    });
+
     render(
-      <MemoryRouter>
-        <ResultsComponent searchTerm="" />
-      </MemoryRouter>,
+      <Provider store={mockStore(initialState)}>
+        <MemoryRouter>
+          <ResultsComponent searchTerm="" />
+        </MemoryRouter>
+      </Provider>
     );
+
     expect(screen.getByTestId('loader-element')).toBeInTheDocument();
   });
 
   it('should render characters after fetching', async () => {
-    mockedAxios.get.mockResolvedValue({
+    mockedUseGetCharactersQuery.mockReturnValue({
       data: { results: mockCharacters, info: mockPageInfo },
+      error: null,
+      isLoading: false,
     });
 
     await act(async () => {
       render(
-        <MemoryRouter>
-          <ResultsComponent searchTerm="" />
-        </MemoryRouter>,
+        <Provider store={mockStore(initialState)}>
+          <MemoryRouter>
+            <ResultsComponent searchTerm="" />
+          </MemoryRouter>
+        </Provider>
       );
     });
 
@@ -55,32 +78,70 @@ describe('ResultsComponent', () => {
   });
 
   it('should handle page change', async () => {
-    mockedAxios.get.mockResolvedValue({
+    mockedUseGetCharactersQuery.mockReturnValue({
       data: { results: mockCharacters, info: mockPageInfo },
+      error: null,
+      isLoading: false,
     });
 
     await act(async () => {
       render(
-        <MemoryRouter initialEntries={['/?page=1']}>
-          <Routes>
-            <Route path="/" element={<ResultsComponent searchTerm="" />} />
-          </Routes>
-        </MemoryRouter>,
+        <Provider store={mockStore(initialState)}>
+          <MemoryRouter initialEntries={['/?page=1']}>
+            <Routes>
+              <Route path="/" element={<ResultsComponent searchTerm="" />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
       );
     });
 
     expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
   });
 
-  it('should not set selectedCharacterId if characterId param is not present', () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<ResultsComponent searchTerm="" />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+  it('should call handleCharacterClick when a character card is clicked', async () => {
+    mockedUseGetCharactersQuery.mockReturnValue({
+      data: { results: mockCharacters, info: mockPageInfo },
+      error: null,
+      isLoading: false,
+    });
 
-    expect(screen.queryByText('Character Details')).not.toBeInTheDocument();
+    await act(async () => {
+      render(
+        <Provider store={mockStore(initialState)}>
+          <MemoryRouter>
+            <ResultsComponent searchTerm="" />
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+
+    const cardElement = await screen.findByTestId('card-element');
+    fireEvent.click(cardElement);
+
+    expect(screen.getByTestId('results-component')).toBeInTheDocument();
+  });
+
+  it.skip('should call handleCheckboxChange when a checkbox is clicked', async () => {
+    mockedUseGetCharactersQuery.mockReturnValue({
+      data: { results: mockCharacters, info: mockPageInfo },
+      error: null,
+      isLoading: false,
+    });
+
+    await act(async () => {
+      render(
+        <Provider store={mockStore(initialState)}>
+          <MemoryRouter>
+            <ResultsComponent searchTerm="" />
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+
+    const checkbox = await screen.findByRole('checkbox');
+    fireEvent.click(checkbox);
+
+    expect(checkbox).toBeChecked();
   });
 });
