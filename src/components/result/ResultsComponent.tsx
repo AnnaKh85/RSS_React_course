@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { useGetCharactersQuery } from '../../services/characterApi';
@@ -72,7 +72,7 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm }) => {
 
         const selectedCharacters = data.results.filter(character => selectedItems.includes(character.id));
         const csvContent = selectedCharacters.map(character =>
-            `${character.id},${character.name},${character.status},${character.species},${character.gender},${character.location.name},${character.url}`
+            `${character.id},${character.name},${character.status},${character.species},${character.gender},${character.location.name},${character.episode}`
         ).join('\n');
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

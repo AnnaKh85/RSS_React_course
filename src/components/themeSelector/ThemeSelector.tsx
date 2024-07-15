@@ -3,7 +3,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 import './themeSelector.css';
 
 const ThemeSelector: React.FC = () => {
-    const { theme, setTheme } = useContext(ThemeContext);
+    const { theme, setTheme } = useContext(ThemeContext)!;
 
     const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setTheme(e.target.value as 'light' | 'dark');

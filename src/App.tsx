@@ -10,7 +10,7 @@ import "./index.css";
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useSearchTerm('searchTerm', '');
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext)!;
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
