@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -9,7 +10,7 @@ import { useGetCharactersQuery } from '../services/characterApi';
 vi.mock('../services/characterApi');
 
 const mockStore = configureStore([]);
-const mockedUseGetCharactersQuery = useGetCharactersQuery as vi.Mock;
+const mockedUseGetCharactersQuery = useGetCharactersQuery as Mock;
 
 describe('ResultsComponent', () => {
   const mockCharacters = [
@@ -51,7 +52,7 @@ describe('ResultsComponent', () => {
         <MemoryRouter>
           <ResultsComponent searchTerm="" />
         </MemoryRouter>
-      </Provider>
+      </Provider>,
     );
 
     expect(screen.getByTestId('loader-element')).toBeInTheDocument();
@@ -70,7 +71,7 @@ describe('ResultsComponent', () => {
           <MemoryRouter>
             <ResultsComponent searchTerm="" />
           </MemoryRouter>
-        </Provider>
+        </Provider>,
       );
     });
 
@@ -92,7 +93,7 @@ describe('ResultsComponent', () => {
               <Route path="/" element={<ResultsComponent searchTerm="" />} />
             </Routes>
           </MemoryRouter>
-        </Provider>
+        </Provider>,
       );
     });
 
@@ -112,7 +113,7 @@ describe('ResultsComponent', () => {
           <MemoryRouter>
             <ResultsComponent searchTerm="" />
           </MemoryRouter>
-        </Provider>
+        </Provider>,
       );
     });
 
@@ -135,7 +136,7 @@ describe('ResultsComponent', () => {
           <MemoryRouter>
             <ResultsComponent searchTerm="" />
           </MemoryRouter>
-        </Provider>
+        </Provider>,
       );
     });
 

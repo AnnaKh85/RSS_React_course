@@ -18,7 +18,7 @@ describe('App Routing and Rendering', () => {
             </Routes>
           </MemoryRouter>
         </ThemeProvider>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByTestId('app-component')).toBeInTheDocument();
   });
@@ -33,7 +33,7 @@ describe('App Routing and Rendering', () => {
             </Routes>
           </MemoryRouter>
         </ThemeProvider>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByTestId('results-component')).toBeInTheDocument();
   });
@@ -48,7 +48,7 @@ describe('App Routing and Rendering', () => {
             </Routes>
           </MemoryRouter>
         </ThemeProvider>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByTestId('pageNotFound-element')).toBeInTheDocument();
   });
@@ -73,7 +73,7 @@ describe('App Routing and Rendering', () => {
             </Routes>
           </MemoryRouter>
         </ThemeProvider>
-      </Provider>
+      </Provider>,
     );
     expect(screen.getByTestId('theme-provider')).toBeInTheDocument();
   });

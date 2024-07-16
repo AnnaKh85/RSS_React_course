@@ -1,11 +1,12 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import type { Mock } from 'vitest';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import DetailedView from '../components/detailedView/DetailedView.tsx';
-import { useGetCharacterByIdQuery } from "../services/characterApi.ts";
+import { useGetCharacterByIdQuery } from '../services/characterApi.ts';
 
 vi.mock('../services/characterApi');
-const mockedUseGetCharacterByIdQuery = useGetCharacterByIdQuery as vi.Mock;
+const mockedUseGetCharacterByIdQuery = useGetCharacterByIdQuery as Mock;
 
 const mockCharacter = {
   id: 1,

@@ -2,8 +2,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { ThemeContext } from '../context/ThemeContext';
-import ThemeSelector from "../components/themeSelector/ThemeSelector.tsx";
-import {vi} from "vitest";
+import ThemeSelector from '../components/themeSelector/ThemeSelector.tsx';
+import { vi } from 'vitest';
 
 describe('ThemeSelector', () => {
   const mockSetTheme = vi.fn();
@@ -12,7 +12,7 @@ describe('ThemeSelector', () => {
     return render(
       <ThemeContext.Provider value={{ theme, setTheme: mockSetTheme }}>
         <ThemeSelector />
-      </ThemeContext.Provider>
+      </ThemeContext.Provider>,
     );
   };
 
