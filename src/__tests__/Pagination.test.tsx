@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { useNavigate } from 'react-router-dom';
 import type { Mock } from 'vitest';
 import { describe, it, expect, vi } from 'vitest';
-import Pagination from '../components/pagination/Pagination.tsx';
+import Pagination from '../app/lib/components/pagination/Pagination.tsx';
 
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn(),

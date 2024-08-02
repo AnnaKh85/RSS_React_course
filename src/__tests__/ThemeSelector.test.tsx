@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import { ThemeContext } from '../context/ThemeContext';
-import ThemeSelector from '../components/themeSelector/ThemeSelector.tsx';
+import { ThemeContext } from '../app/lib/context/ThemeContext';
+import ThemeSelector from '../app/lib/components/themeSelector/ThemeSelector.tsx';
 import { vi } from 'vitest';
 
 describe('ThemeSelector', () => {

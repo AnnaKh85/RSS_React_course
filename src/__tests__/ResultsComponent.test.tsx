@@ -4,7 +4,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import ResultsComponent from '../components/result/ResultsComponent.tsx';
+import ResultsComponent from '../app/lib/components/result/ResultsComponent.tsx';
 import { useGetCharactersQuery } from '../services/characterApi';
 
 vi.mock('../services/characterApi');

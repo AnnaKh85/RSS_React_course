@@ -1,13 +1,8 @@
-import { useNavigate } from 'react-router-dom';
 import img404 from '@assets/404-2.jpeg';
 import './notFoundPage.css';
+import Link from "next/link";
 
 function NotFoundPage() {
-  const navigate = useNavigate();
-
-  const handleGoHome = () => {
-    navigate('/');
-  };
 
   return (
     <div className="layout404" data-testid="pageNotFound-element">
@@ -17,7 +12,9 @@ function NotFoundPage() {
         The page you are looking for might have been removed, <br /> had its name changed, or is temporarily
         unavailable.
       </p>
-      <button onClick={handleGoHome}>GO TO HOME PAGE</button>
+        <Link href={"/"}>
+            <button onClick={() => false}>GO TO HOME PAGE</button>
+        </Link>
     </div>
   );
 }

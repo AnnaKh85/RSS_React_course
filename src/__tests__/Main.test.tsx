@@ -2,10 +2,10 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '../app/store';
-import { ThemeProvider } from '../context/ThemeContext.tsx';
-import App from '../App.tsx';
-import ResultsComponent from '../components/result/ResultsComponent.tsx';
-import NotFoundPage from '../pages/notFoundPage/NotFoundPage.tsx';
+import { ThemeProvider } from '../app/lib/context/ThemeContext.tsx';
+import App from '../app/lib/App.tsx';
+import ResultsComponent from '../app/lib/components/result/ResultsComponent.tsx';
+import NotFoundPage from '../app/search/not-found/NotFoundPage.tsx';
 
 describe('App Routing and Rendering', () => {
   it('renders the App component for the root path', () => {

@@ -1,3 +1,6 @@
+"use client";
+
+
 import type { ReactNode } from 'react';
 import React, { createContext, useState } from 'react';
 

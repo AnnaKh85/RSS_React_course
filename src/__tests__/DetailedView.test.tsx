@@ -2,7 +2,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import type { Mock } from 'vitest';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import DetailedView from '../components/detailedView/DetailedView.tsx';
+import DetailedView from '../app/lib/components/detailedView/DetailedView.tsx';
 import { useGetCharacterByIdQuery } from '../services/characterApi.ts';
 
 vi.mock('../services/characterApi');

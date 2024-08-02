@@ -3,7 +3,7 @@
 
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import SearchComponent from '../components/search/SearchComponent.tsx';
+import SearchComponent from '../app/lib/components/search/SearchComponent.tsx';
 
 describe('SearchComponent', () => {
   beforeEach(() => {
