@@ -3,11 +3,9 @@ import { useState, useEffect } from 'react';
 export const useSearchTerm = (key: string, initialValue: string) => {
   const [value, setValue] = useState(initialValue);
 
-
   useEffect(() => {
-      setValue(localStorage.getItem(key) || initialValue)
-  }, [])
-
+    setValue(localStorage.getItem(key) || initialValue);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(key, value);

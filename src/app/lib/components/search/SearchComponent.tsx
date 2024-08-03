@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface SearchComponentProps {
   onSearch: (searchTerm: string) => void;
@@ -8,11 +8,9 @@ interface SearchComponentProps {
 const SearchComponent: React.FC<SearchComponentProps> = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-
   useEffect(() => {
-    setSearchTerm(localStorage.getItem('searchTerm') || '')
-  }, [])
-
+    setSearchTerm(localStorage.getItem('searchTerm') || '');
+  }, []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);

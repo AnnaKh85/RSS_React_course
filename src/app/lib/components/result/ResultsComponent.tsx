@@ -14,8 +14,7 @@ import DetailedView from '../detailedView/DetailedView';
 import NotFoundPage from '../../../search/not-found/NotFoundPage';
 import Loader from '../loader/Loader.tsx';
 import { saveAs } from 'file-saver';
-import {useSearchParams} from "next/navigation";
-import Link from "next/link";
+import { useSearchParams } from 'next/navigation';
 
 interface ResultsComponentProps {
   searchTerm: string;
@@ -26,7 +25,6 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, pageNum
   const dispatch = useAppDispatch();
   const selectedCharacterId = useAppSelector((state) => state.characters.selectedCharacterId);
   const selectedItems = useAppSelector((state) => state.characters.selectedItems);
-
 
   const queryParams = useSearchParams();
 
@@ -49,9 +47,9 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, pageNum
     }
   }, [searchTerm, /*navigate,*/ queryParams]);
 
-  const handlePageChange = (newPage: number) => {
-    //navigate(`?name=${searchTerm}&page=${newPage}`);
-  };
+  // const handlePageChange = (newPage: number) => {
+  //   //navigate(`?name=${searchTerm}&page=${newPage}`);
+  // };
 
   const handleCharacterClick = (id: number) => {
     dispatch(setSelectedCharacterId(id));
@@ -107,37 +105,37 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, pageNum
         </div>
         <div className="card-container">
           {data?.results.map((character) => (
-                <div
-                  key={character.id}
-                  className="card"
-                  data-testid="card-element"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCharacterClick(character.id);
-                  }}
-                >
-                  <input
-                    className="selected-character-checkbox"
-                    type="checkbox"
-                    checked={selectedItems.includes(character.id)}
-                    onChange={(e) => handleCheckboxChange(character.id, e.target.checked)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <img src={character.image} alt={character.name} style={{ width: '100%' }} />
-                  <h2>{character.name}</h2>
-                  <p>
-                    <strong>Status:</strong> {character.status}
-                  </p>
-                  <p>
-                    <strong>Species:</strong> {character.species}
-                  </p>
-                  <p>
-                    <strong>Gender:</strong> {character.gender}
-                  </p>
-                  <p>
-                    <strong>Location:</strong> {character.location.name}
-                  </p>
-                </div>
+            <div
+              key={character.id}
+              className="card"
+              data-testid="card-element"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCharacterClick(character.id);
+              }}
+            >
+              <input
+                className="selected-character-checkbox"
+                type="checkbox"
+                checked={selectedItems.includes(character.id)}
+                onChange={(e) => handleCheckboxChange(character.id, e.target.checked)}
+                onClick={(e) => e.stopPropagation()}
+              />
+              <img src={character.image} alt={character.name} style={{ width: '100%' }} />
+              <h2>{character.name}</h2>
+              <p>
+                <strong>Status:</strong> {character.status}
+              </p>
+              <p>
+                <strong>Species:</strong> {character.species}
+              </p>
+              <p>
+                <strong>Gender:</strong> {character.gender}
+              </p>
+              <p>
+                <strong>Location:</strong> {character.location.name}
+              </p>
+            </div>
           ))}
         </div>
         {selectedItems.length > 0 && (
