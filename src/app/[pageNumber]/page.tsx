@@ -2,13 +2,13 @@
 
 
 import React, {useContext} from "react";
-import {useSearchTerm} from "../../../../hooks/useSearchTerm";
-import {ThemeContext} from "../../../lib/context/ThemeContext";
-import ErrorBoundary from "../../../lib/components/errBoundary/ErrorBoundary";
-import ThemeSelector from "../../../lib/components/themeSelector/ThemeSelector";
-import SearchComponent from "../../../lib/components/search/SearchComponent";
-import ResultsComponent from "../../../lib/components/result/ResultsComponent";
-import {store} from "../../../store";
+import {useSearchTerm} from "../../hooks/useSearchTerm";
+import {ThemeContext} from "../lib/context/ThemeContext";
+import ErrorBoundary from "../lib/components/errBoundary/ErrorBoundary";
+import ThemeSelector from "../lib/components/themeSelector/ThemeSelector";
+import SearchComponent from "../lib/components/search/SearchComponent";
+import ResultsComponent from "../lib/components/result/ResultsComponent";
+import {store} from "../store";
 import {Provider} from "react-redux";
 import {ScriptProps} from "next/dist/client/script";
 

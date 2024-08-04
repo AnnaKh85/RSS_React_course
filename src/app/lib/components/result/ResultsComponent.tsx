@@ -49,10 +49,6 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, pageNum
     }
   }, [searchTerm, /*navigate,*/ queryParams]);
 
-  const handlePageChange = (newPage: number) => {
-    //navigate(`?name=${searchTerm}&page=${newPage}`);
-  };
-
   const handleCharacterClick = (id: number) => {
     dispatch(setSelectedCharacterId(id));
     //navigate(`?name=${searchTerm}&page=${page}&characterId=${id}`);
@@ -97,13 +93,17 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, pageNum
     <div className="result-container" data-testid="results-component">
       <div className="results-list" onClick={handleCloseDetails}>
         <div className="pagination">
-          <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-            Previous
-          </button>
+          <Link href={`/${page-1}`}>
+              <button onClick={() => false} disabled={page <= 1}>
+                Previous
+              </button>
+          </Link>
           <span>Page {page}</span>
-          <button onClick={() => handlePageChange(page + 1)} disabled={!data?.info.next}>
-            Next
-          </button>
+          <Link href={`/${page+1}`}>
+              <button onClick={() => false} disabled={!data?.info.next}>
+                Next
+              </button>
+          </Link>
         </div>
         <div className="card-container">
           {data?.results.map((character) => (
