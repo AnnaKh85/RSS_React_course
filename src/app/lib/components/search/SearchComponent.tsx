@@ -1,16 +1,18 @@
-import type { ChangeEvent } from 'react';
+import type {ChangeEvent} from 'react';
 import React, {useState, useEffect} from 'react';
+import Link from "next/link";
 
 interface SearchComponentProps {
-  onSearch: (searchTerm: string) => void;
+  initialSearchTerm: string;
 }
 
-const SearchComponent: React.FC<SearchComponentProps> = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SearchComponent: React.FC<SearchComponentProps> = ({ initialSearchTerm }) => {
+  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
+  //const [searchTerm, setSearchTerm] = useSearchTerm('searchTerm', '');
 
 
   useEffect(() => {
-    setSearchTerm(localStorage.getItem('searchTerm') || '')
+    // setSearchTerm(localStorage.getItem('searchTerm') || '')
   }, [])
 
 
@@ -18,16 +20,21 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ onSearch }) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSearch = () => {
-    const trimmedTerm = searchTerm.trim();
-    onSearch(trimmedTerm);
-    localStorage.setItem('searchTerm', trimmedTerm);
-  };
+  // const handleSearch = () => {
+  //   const trimmedTerm = searchTerm.trim();
+  //   onSearch(trimmedTerm);
+  //   localStorage.setItem('searchTerm', trimmedTerm);
+  // };
 
   return (
     <div>
       <input type="text" value={searchTerm} onChange={handleInputChange} />
-      <button onClick={handleSearch}>Search</button>
+      <Link href={{
+          pathname: "/1",
+          query: {name: searchTerm}
+      }}>
+          <button onClick={() => false}>Search</button>
+      </Link>
     </div>
   );
 };

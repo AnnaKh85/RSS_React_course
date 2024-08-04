@@ -11,46 +11,48 @@ import '../search/search.css';
 import './resultComponent.css';
 import '../pagination/pagination.css';
 import DetailedView from '../detailedView/DetailedView';
-import NotFoundPage from '../../../search/not-found/NotFoundPage';
+import NotFoundPage from '../../not-found/NotFoundPage';
 import Loader from '../loader/Loader.tsx';
 import { saveAs } from 'file-saver';
-import {useSearchParams} from "next/navigation";
 import Link from "next/link";
 
 interface ResultsComponentProps {
-  searchTerm: string;
-  pageNumber?: string;
+  searchTerm?: string;
+  page: number;
+  handleChClick: (id: number) => void
+  characterId: number | null
 }
 
-const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, pageNumber }) => {
+const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, page, handleChClick, characterId }) => {
   const dispatch = useAppDispatch();
   const selectedCharacterId = useAppSelector((state) => state.characters.selectedCharacterId);
   const selectedItems = useAppSelector((state) => state.characters.selectedItems);
 
 
-  const queryParams = useSearchParams();
+  // const queryParams = useSearchParams();
 
   // const pageParam = queryParams.get('page');
-  const pn = pageNumber;
-  const page = pn ? parseInt(pn) : 1;
+  // const pn = pageNumber;
+  // const page = pn ? parseInt(pn) : 1;
 
   const { data, error, isLoading } = useGetCharactersQuery({ name: searchTerm, page });
 
   useEffect(() => {
-    const characterIdParam = queryParams.get('characterId');
-    if (characterIdParam) {
-      dispatch(setSelectedCharacterId(parseInt(characterIdParam)));
+    // const characterIdParam = queryParams.get('characterId');
+    if (characterId) {
+      dispatch(setSelectedCharacterId(characterId));
     }
   }, [/*location.search,*/ dispatch]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (!queryParams.has('page') || queryParams.get('name') !== searchTerm) {
       //navigate(`?name=${searchTerm}&page=1`);
     }
-  }, [searchTerm, /*navigate,*/ queryParams]);
+  }, [searchTerm, navigate, queryParams]);*/
 
   const handleCharacterClick = (id: number) => {
     dispatch(setSelectedCharacterId(id));
+    handleChClick(id);
     //navigate(`?name=${searchTerm}&page=${page}&characterId=${id}`);
   };
 
@@ -85,6 +87,22 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, pageNum
     saveAs(blob, `${selectedItems.length}_characters.csv`);
   };
 
+
+  const getLinkHref: (page: number, searchTerm?: string) => object = (page, searchTerm) => {
+      if (searchTerm && searchTerm != "") {
+          return {
+              pathname: `/${page}`,
+              query: {name: searchTerm}
+          };
+      } else {
+          return {
+            pathname: `/${page}`
+          };
+      }
+  }
+
+
+
   if (isLoading) return <Loader />;
   if (error) return <p>Failed to fetch characters</p>;
   if (data?.results.length === 0) return <NotFoundPage />;
@@ -93,13 +111,13 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, pageNum
     <div className="result-container" data-testid="results-component">
       <div className="results-list" onClick={handleCloseDetails}>
         <div className="pagination">
-          <Link href={`/${page-1}`}>
+          <Link href={getLinkHref(page-1, searchTerm)}>
               <button onClick={() => false} disabled={page <= 1}>
                 Previous
               </button>
           </Link>
           <span>Page {page}</span>
-          <Link href={`/${page+1}`}>
+          <Link href={getLinkHref(page+1, searchTerm)}>
               <button onClick={() => false} disabled={!data?.info.next}>
                 Next
               </button>

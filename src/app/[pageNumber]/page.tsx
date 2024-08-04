@@ -1,8 +1,7 @@
 "use client";
 
 
-import React, {useContext} from "react";
-import {useSearchTerm} from "../../hooks/useSearchTerm";
+import React, {useContext, useState} from "react";
 import {ThemeContext} from "../lib/context/ThemeContext";
 import ErrorBoundary from "../lib/components/errBoundary/ErrorBoundary";
 import ThemeSelector from "../lib/components/themeSelector/ThemeSelector";
@@ -15,20 +14,33 @@ import {ScriptProps} from "next/dist/client/script";
 
 type Props = {
     params: {pageNumber: string},
+    searchParams?: {name: string}
 } & ScriptProps;
 
 
 
 const App: React.FC<Props> = (props: Props) => {
-    const [searchTerm, setSearchTerm] = useSearchTerm('searchTerm', '');
+    const pageNumber = props.params.pageNumber;
+    let page = parseInt(pageNumber);
+    const name = props.searchParams?.name;
+
+    if (Number.isNaN(page)) {
+        page = 1;
+    }
+
+
+    const [characterId, setCharacterId] = useState<number | null>(null);
     const { theme } = useContext(ThemeContext)!;
 
-    const pageNumber = props.params.pageNumber;
 
-    console.log("pageNumber=" + pageNumber);
+    console.log("pageNumber=" + pageNumber + ",name=" + name);
 
-    const handleSearch = (term: string) => {
-        setSearchTerm(term);
+    // const handleSearch = (term: string) => {
+    //     setSearchTerm(term);
+    // };
+
+    const handleChClick = (characterId: number) => {
+        setCharacterId(characterId);
     };
 
     const throwError = () => {
@@ -41,10 +53,10 @@ const App: React.FC<Props> = (props: Props) => {
             <div className={`app-container ${theme}`} data-testid="app-component">
                 <ThemeSelector />
                 <div className="search-form">
-                    <SearchComponent onSearch={handleSearch} />
+                    <SearchComponent initialSearchTerm={name ? name : ""} />
                     <button onClick={throwError}>Throw Error</button>
                 </div>
-                <ResultsComponent searchTerm={searchTerm} pageNumber={pageNumber} />
+                <ResultsComponent searchTerm={name} page={page} handleChClick={handleChClick} characterId={characterId} />
             </div>
         </ErrorBoundary>
         </Provider>
