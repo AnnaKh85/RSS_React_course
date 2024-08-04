@@ -3,9 +3,10 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '../app/store';
 import { ThemeProvider } from '../app/lib/context/ThemeContext.tsx';
-import App from '../app/lib/App.tsx';
 import ResultsComponent from '../app/lib/components/result/ResultsComponent.tsx';
 import NotFoundPage from '../app/lib/not-found/NotFoundPage.tsx';
+import App from "next/app";
+import { describe, it, expect, vi } from 'vitest';
 
 describe('App Routing and Rendering', () => {
   it('renders the App component for the root path', () => {
@@ -29,7 +30,10 @@ describe('App Routing and Rendering', () => {
         <ThemeProvider>
           <MemoryRouter initialEntries={['/search']}>
             <Routes>
-              <Route path="search" element={<ResultsComponent searchTerm="" />} />
+              <Route path="search" element={<ResultsComponent           searchTerm=""
+                                                                        characterId={null}
+                                                                        handleChClick={() => {}}
+                                                                        page={1} />} />
             </Routes>
           </MemoryRouter>
         </ThemeProvider>
