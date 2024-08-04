@@ -11,7 +11,7 @@ import '../search/search.css';
 import './resultComponent.css';
 import '../pagination/pagination.css';
 import DetailedView from '../detailedView/DetailedView';
-import NotFoundPage from '../../not-found/NotFoundPage';
+import NotFoundPage from '../../../NotFoundPage';
 import Loader from '../loader/Loader.tsx';
 import { saveAs } from 'file-saver';
 import Link from 'next/link';

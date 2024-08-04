@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from '../app/store';
 import { ThemeProvider } from '../app/lib/context/ThemeContext.tsx';
 import ResultsComponent from '../app/lib/components/result/ResultsComponent.tsx';
-import NotFoundPage from '../app/lib/not-found/NotFoundPage.tsx';
+import NotFoundPage from '../app/NotFoundPage.tsx';
 import App from "next/app";
 import { describe, it, expect, vi } from 'vitest';
 

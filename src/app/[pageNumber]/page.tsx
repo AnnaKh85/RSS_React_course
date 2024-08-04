@@ -1,24 +1,28 @@
 'use client';
 
-import React, { useContext, useState } from 'react';
-import { ThemeContext } from '../lib/context/ThemeContext';
+import React, {useContext, useState, PropsWithChildren} from 'react';
+import {ThemeContext} from '../lib/context/ThemeContext';
 import ErrorBoundary from '../lib/components/errBoundary/ErrorBoundary';
 import ThemeSelector from '../lib/components/themeSelector/ThemeSelector';
 import SearchComponent from '../lib/components/search/SearchComponent';
 import ResultsComponent from '../lib/components/result/ResultsComponent';
-import { store } from '../store';
-import { Provider } from 'react-redux';
+import {store} from '../store';
+import {Provider} from 'react-redux';
+import {useSearchParams, ReadonlyURLSearchParams, useParams} from "next/navigation";
 
-export interface PageProps {
-  params: { pageNumber: string };
-  searchParams?: { name: string };
-}
+type CustomParams = {
+  pageNumber?: string
+};
 
-const App: React.FC<PageProps> = (props: PageProps) => {
-  const pageNumber = props.params.pageNumber;
+
+
+const App: React.FC<PropsWithChildren> = () => {
+  const params = useParams<CustomParams>();
+  const searchParams: ReadonlyURLSearchParams = useSearchParams();
+
+  const pageNumber = params.pageNumber ?? "1";
   let page = parseInt(pageNumber);
-  // let page = 1
-  const name = props.searchParams?.name;
+  const name = searchParams.get("name") ?? undefined;
 
   if (Number.isNaN(page)) {
     page = 1;
@@ -29,9 +33,6 @@ const App: React.FC<PageProps> = (props: PageProps) => {
 
   console.log('pageNumber=' + pageNumber + ',name=' + name);
 
-  // const handleSearch = (term: string) => {
-  //     setSearchTerm(term);
-  // };
 
   const handleChClick = (characterId: number) => {
     setCharacterId(characterId);

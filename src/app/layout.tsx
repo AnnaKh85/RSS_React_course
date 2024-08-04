@@ -2,7 +2,7 @@ import React from 'react';
 import { ThemeProvider } from './lib/context/ThemeContext';
 
 export const metadata = {
-  title: 'Next.js. Проба в1.0',
+  title: 'Next.js. Проба в2.0',
   description: '',
 };
 
