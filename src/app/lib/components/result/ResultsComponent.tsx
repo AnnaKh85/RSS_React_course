@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
 import { useGetCharactersQuery } from '../../../../services/characterApi';
@@ -11,7 +13,7 @@ import '../search/search.css';
 import './resultComponent.css';
 import '../pagination/pagination.css';
 import DetailedView from '../detailedView/DetailedView';
-import NotFoundPage from '../../../NotFoundPage';
+import NotFoundPage from '../../../not-found';
 import Loader from '../loader/Loader.tsx';
 import { saveAs } from 'file-saver';
 import Link from 'next/link';
