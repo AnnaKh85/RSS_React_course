@@ -5,7 +5,7 @@ import { store } from '../app/store';
 import { ThemeProvider } from '../app/lib/context/ThemeContext.tsx';
 import App from '../app/lib/App.tsx';
 import ResultsComponent from '../app/lib/components/result/ResultsComponent.tsx';
-import NotFoundPage from '../app/search/not-found/NotFoundPage.tsx';
+import NotFoundPage from '../app/lib/not-found/NotFoundPage.tsx';
 
 describe('App Routing and Rendering', () => {
   it('renders the App component for the root path', () => {

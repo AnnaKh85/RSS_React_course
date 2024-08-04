@@ -4,7 +4,7 @@ const nextConfig = {
         return ([
             {
                 source: "/",
-                destination: "/search",
+                destination: "/1",
                 permanent: true,
                 basePath: false
             }
