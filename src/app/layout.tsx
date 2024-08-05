@@ -1,16 +1,17 @@
+'use client';
+
 import React from 'react';
 import { ThemeProvider } from './lib/context/ThemeContext';
-
-export const metadata = {
-  title: 'Next.js. Проба в2.0',
-  description: '',
-};
+import { store } from './store';
+import { Provider } from 'react-redux';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <ThemeProvider>
-        <body>{children}</body>
+        <Provider store={store}>
+          <body>{children}</body>
+        </Provider>
       </ThemeProvider>
     </html>
   );

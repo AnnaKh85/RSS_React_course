@@ -1,15 +1,14 @@
-'use client';
+import type { ReactNode } from 'react';
+import React from 'react';
+import type { NextPage, Metadata } from 'next';
 
-import { store } from './store';
-import { Provider } from 'react-redux';
-import React, { ReactNode } from 'react';
+export const metadata: Metadata = {
+  title: 'Next.js. Проба в2.0',
+  description: '',
+};
 
-export interface PageProps {
-  children?: ReactNode;
-}
-
-const MainPage: React.FC<PageProps> = ({ children }) => {
-  return <Provider store={store}>{children}</Provider>;
+const MainPage: NextPage = function (): ReactNode {
+  return <></>;
 };
 
 export default MainPage;

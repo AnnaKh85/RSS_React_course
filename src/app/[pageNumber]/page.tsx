@@ -10,13 +10,10 @@ import { store } from '../store';
 import { Provider } from 'react-redux';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 import { useSearchParams, useParams } from 'next/navigation';
+import type { NextPage } from 'next';
 
-type CustomParams = {
-  pageNumber?: string;
-};
-
-const App: React.FC = () => {
-  const params = useParams<CustomParams>();
+const App: NextPage = () => {
+  const params = useParams<{ pageNumber: string }>();
   const searchParams: ReadonlyURLSearchParams | null = useSearchParams();
 
   const pageNumber = params?.pageNumber ?? '1';
@@ -41,18 +38,18 @@ const App: React.FC = () => {
   };
 
   return (
-      <Provider store={store}>
-        <ErrorBoundary>
-          <div className={`app-container ${theme}`} data-testid="app-component">
-            <ThemeSelector />
-            <div className="search-form">
-              <SearchComponent initialSearchTerm={name} />
-              <button onClick={throwError}>Throw Error</button>
-            </div>
-            <ResultsComponent searchTerm={name} page={page} handleChClick={handleChClick} characterId={characterId} />
+    <Provider store={store}>
+      <ErrorBoundary>
+        <div className={`app-container ${theme}`} data-testid="app-component">
+          <ThemeSelector />
+          <div className="search-form">
+            <SearchComponent initialSearchTerm={name} />
+            <button onClick={throwError}>Throw Error</button>
           </div>
-        </ErrorBoundary>
-      </Provider>
+          <ResultsComponent searchTerm={name} page={page} handleChClick={handleChClick} characterId={characterId} />
+        </div>
+      </ErrorBoundary>
+    </Provider>
   );
 };
 
