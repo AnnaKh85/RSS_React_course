@@ -2,12 +2,14 @@
 
 import { store } from './store';
 import { Provider } from 'react-redux';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 export interface PageProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
-export default function MainPage(prop: PageProps): React.ReactElement {
-  return <Provider store={store}>{prop.children}</Provider>;
-}
+const MainPage: React.FC<PageProps> = ({ children }) => {
+  return <Provider store={store}>{children}</Provider>;
+};
+
+export default MainPage;

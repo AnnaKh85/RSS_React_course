@@ -1,6 +1,5 @@
 'use client';
 
-import type { PropsWithChildren } from 'react';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from '../lib/context/ThemeContext';
 import ErrorBoundary from '../lib/components/errBoundary/ErrorBoundary';
@@ -16,13 +15,13 @@ type CustomParams = {
   pageNumber?: string;
 };
 
-const App: React.FC<PropsWithChildren> = () => {
+const App: React.FC = () => {
   const params = useParams<CustomParams>();
-  const searchParams: ReadonlyURLSearchParams = useSearchParams();
+  const searchParams: ReadonlyURLSearchParams | null = useSearchParams();
 
-  const pageNumber = params.pageNumber ?? '1';
+  const pageNumber = params?.pageNumber ?? '1';
   let page = parseInt(pageNumber);
-  const name = searchParams.get('name') ?? undefined;
+  const name = searchParams?.get('name') ?? '';
 
   if (Number.isNaN(page)) {
     page = 1;
@@ -42,18 +41,18 @@ const App: React.FC<PropsWithChildren> = () => {
   };
 
   return (
-    <Provider store={store}>
-      <ErrorBoundary>
-        <div className={`app-container ${theme}`} data-testid="app-component">
-          <ThemeSelector />
-          <div className="search-form">
-            <SearchComponent initialSearchTerm={name ? name : ''} />
-            <button onClick={throwError}>Throw Error</button>
+      <Provider store={store}>
+        <ErrorBoundary>
+          <div className={`app-container ${theme}`} data-testid="app-component">
+            <ThemeSelector />
+            <div className="search-form">
+              <SearchComponent initialSearchTerm={name} />
+              <button onClick={throwError}>Throw Error</button>
+            </div>
+            <ResultsComponent searchTerm={name} page={page} handleChClick={handleChClick} characterId={characterId} />
           </div>
-          <ResultsComponent searchTerm={name} page={page} handleChClick={handleChClick} characterId={characterId} />
-        </div>
-      </ErrorBoundary>
-    </Provider>
+        </ErrorBoundary>
+      </Provider>
   );
 };
 
