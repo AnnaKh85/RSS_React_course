@@ -5,7 +5,7 @@ import { store } from '../app/store';
 import { ThemeProvider } from '../app/lib/context/ThemeContext.tsx';
 import ResultsComponent from '../app/lib/components/result/ResultsComponent.tsx';
 import NotFoundPage from '../app/not-found.tsx';
-import App from "next/app";
+import App from 'next/app';
 import { describe, it, expect, vi } from 'vitest';
 
 describe('App Routing and Rendering', () => {
@@ -30,10 +30,10 @@ describe('App Routing and Rendering', () => {
         <ThemeProvider>
           <MemoryRouter initialEntries={['/search']}>
             <Routes>
-              <Route path="search" element={<ResultsComponent           searchTerm=""
-                                                                        characterId={null}
-                                                                        handleChClick={() => {}}
-                                                                        page={1} />} />
+              <Route
+                path="search"
+                element={<ResultsComponent searchTerm="" characterId={null} handleChClick={() => {}} page={1} />}
+              />
             </Routes>
           </MemoryRouter>
         </ThemeProvider>

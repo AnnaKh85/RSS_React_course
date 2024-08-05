@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import img404 from '@assets/404-2.jpeg';
 import './notFoundPage.css';
