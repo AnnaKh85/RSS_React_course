@@ -10,7 +10,7 @@ export default function Index() {
     return (
         <p id="index-page">
             <Link to={"/pages/1"} relative="route">
-            К работе
+                К работе
             </Link>
         </p>
     );

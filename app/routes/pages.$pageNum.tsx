@@ -3,7 +3,6 @@ import {LoaderFunctionArgs} from "@remix-run/node";
 import {useLoaderData} from "@remix-run/react";
 import ThemeSelector from "../lib/themeSelector/ThemeSelector";
 import {Provider} from "react-redux";
-import ErrorBoundary from "../lib/errBoundary/ErrorBoundary";
 import SearchComponent from "../lib/search/SearchComponent";
 import ResultsComponent from "../lib/result/ResultsComponent";
 import {store} from "../store";
@@ -58,16 +57,16 @@ export default function Page() {
 
     return (
         <Provider store={store}>
-             <ErrorBoundary>
+             {/*<ErrorBoundaryRemix>*/}
                  <div className={`app-container ${theme}`} data-testid="app-component">
                      <ThemeSelector />
                      <div className="search-form">
                          <SearchComponent initialSearchTerm={name ? name : ''} />
-                         <button onClick={throwError}>Throw Error</button>
+                         <button onClick={throwError} type="button">Throw Error</button>
                      </div>
                      <ResultsComponent searchTerm={name} page={page} handleChClick={handleChClick} characterId={characterId} />
                  </div>
-             </ErrorBoundary>
+             {/*</ErrorBoundaryRemix>*/}
         </Provider>
     );
 };

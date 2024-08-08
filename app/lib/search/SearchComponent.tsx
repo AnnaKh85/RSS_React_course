@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 import React, { useState, useEffect } from 'react';
-import {Form} from "@remix-run/react";
+import {Form, Link} from "@remix-run/react";
 
 interface SearchComponentProps {
   initialSearchTerm: string;
@@ -24,6 +24,20 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ initialSearchTerm }) 
   //   localStorage.setItem('searchTerm', trimmedTerm);
   // };
 
+
+    const getLinkHref: (page: number, searchTerm?: string) => object = (page, searchTerm) => {
+        if (searchTerm && searchTerm != '') {
+            return {
+                pathname: `../${page}`,
+                search: `?name=${searchTerm}`,
+            };
+        } else {
+            return {
+                pathname: `../${page}`,
+            };
+        }
+    };
+
   return (
       <div>
           <Form id="main-search"
@@ -31,17 +45,10 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ initialSearchTerm }) 
                 method="post"
           >
               <input type="text" value={searchTerm} name="name" onChange={handleInputChange} />
-              <button onClick={() => false}>Search</button>
+              <Link to={getLinkHref(1, searchTerm)} relative="path">
+                <button onClick={() => false} typeof="button">Search</button>
+              </Link>
           </Form>
-
-        {/*<Link*/}
-        {/*    href={{*/}
-        {/*      pathname: '/1',*/}
-        {/*      query: { name: searchTerm },*/}
-        {/*    }}*/}
-        {/*>*/}
-        {/*  */}
-        {/*</Link>*/}
       </div>
   );
 };

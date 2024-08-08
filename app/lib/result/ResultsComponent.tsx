@@ -92,12 +92,13 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, page, h
   const getLinkHref: (page: number, searchTerm?: string) => object = (page, searchTerm) => {
     if (searchTerm && searchTerm != '') {
       return {
-        pathname: `/${page}`,
-        query: { name: searchTerm },
+        pathname: `../${page}`,
+        search: `?name=${searchTerm}`,
+        //query: { name: searchTerm },
       };
     } else {
       return {
-        pathname: `/${page}`,
+        pathname: `../${page}`,
       };
     }
   };
@@ -110,13 +111,13 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, page, h
       <div className="result-container" data-testid="results-component">
         <div className="results-list" onClick={handleCloseDetails}>
           <div className="pagination">
-            <Link to={getLinkHref(page - 1, searchTerm)}>
+            <Link to={getLinkHref(page - 1, searchTerm)} relative="path">
               <button onClick={() => false} disabled={page <= 1}>
                 Previous
               </button>
             </Link>
             <span>Page {page}</span>
-            <Link to={getLinkHref(page + 1, searchTerm)}>
+            <Link to={getLinkHref(page + 1, searchTerm)} relative="path">
               <button onClick={() => false} disabled={!data?.info.next}>
                 Next
               </button>
