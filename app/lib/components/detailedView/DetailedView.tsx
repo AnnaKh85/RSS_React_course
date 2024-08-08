@@ -1,7 +1,7 @@
 import React from 'react';
-import { useGetCharacterByIdQuery } from '../../services/characterApi';
 import Loader from '../loader/Loader.tsx';
 import './detailedView.css';
+import {useGetCharacterByIdQuery} from "../../services/characterApi";
 
 interface CharacterDetailsProps {
   characterId: number;

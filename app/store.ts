@@ -1,8 +1,8 @@
 import type { ThunkAction, Action } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
-import charactersReducer from './charactersSlice.ts';
-import {characterApi} from "./services/characterApi";
+import charactersReducer from './lib/charactersSlice.ts';
+import {characterApi} from "./lib/services/characterApi";
 
 export const store = configureStore({
   reducer: {

@@ -5,12 +5,11 @@ import { RemixServer, Meta, Links, ScrollRestoration, Scripts, Form, Link, useLo
 import * as isbotModule from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { Outlet } from "react-router-dom";
-import { createContext, useState, Component, useContext, useEffect } from "react";
+import { createContext, useState, useContext, Component, useEffect } from "react";
 import { useDispatch, useSelector, Provider } from "react-redux";
-import invariant from "tiny-invariant";
 import { createSlice, configureStore } from "@reduxjs/toolkit";
-import { createApi, fetchBaseQuery, setupListeners } from "@reduxjs/toolkit/query/react";
 import saveAs from "file-saver";
+import { createApi, fetchBaseQuery, setupListeners } from "@reduxjs/toolkit/query/react";
 const ABORT_DELAY = 5e3;
 function handleRequest(request, responseStatusCode, responseHeaders, remixContext, loadContext) {
   let prohibitOutOfOrderStreaming = isBotRequest(request.headers.get("user-agent")) || remixContext.isSpaMode;
@@ -152,6 +151,63 @@ const route0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: App,
   meta
 }, Symbol.toStringTag, { value: "Module" }));
+const ThemeSelector = () => {
+  const { theme, setTheme } = useContext(ThemeContext);
+  const handleThemeChange = (e) => {
+    setTheme(e.target.value);
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "theme-selector", "data-testid": "theme-provider", children: [
+    /* @__PURE__ */ jsx("label", { htmlFor: "theme", children: "Select Theme: " }),
+    /* @__PURE__ */ jsxs("select", { id: "theme", value: theme, onChange: handleThemeChange, children: [
+      /* @__PURE__ */ jsx("option", { value: "light", children: "Light" }),
+      /* @__PURE__ */ jsx("option", { value: "dark", children: "Dark" })
+    ] })
+  ] });
+};
+function Fallback() {
+  return /* @__PURE__ */ jsxs("div", { className: "fallback-container", children: [
+    /* @__PURE__ */ jsx("p", { children: "Oops, an error occurred..." }),
+    /* @__PURE__ */ jsx("p", { children: "Run away from the error!" })
+  ] });
+}
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return /* @__PURE__ */ jsx(Fallback, {});
+    }
+    return this.props.children;
+  }
+}
+const SearchComponent = ({ initialSearchTerm }) => {
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  useEffect(() => {
+  }, []);
+  const handleInputChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+  return /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsxs(
+    Form,
+    {
+      id: "main-search",
+      role: "search",
+      method: "post",
+      children: [
+        /* @__PURE__ */ jsx("input", { type: "text", value: searchTerm, name: "name", onChange: handleInputChange }),
+        /* @__PURE__ */ jsx("button", { onClick: () => false, children: "Search" })
+      ]
+    }
+  ) });
+};
 const initialState = {
   selectedCharacterId: null,
   selectedItems: []
@@ -178,6 +234,8 @@ const charactersSlice = createSlice({
 });
 const { setSelectedCharacterId, addSelectedItem, removeSelectedItem, clearSelectedItems } = charactersSlice.actions;
 const charactersReducer = charactersSlice.reducer;
+const useAppDispatch = () => useDispatch();
+const useAppSelector = useSelector;
 const characterApi = createApi({
   reducerPath: "characterApi",
   baseQuery: fetchBaseQuery({ baseUrl: "https://rickandmortyapi.com/api/" }),
@@ -195,71 +253,19 @@ const characterApi = createApi({
   })
 });
 const { useGetCharactersQuery, useGetCharacterByIdQuery } = characterApi;
-const store = configureStore({
-  reducer: {
-    [characterApi.reducerPath]: characterApi.reducer,
-    characters: charactersReducer
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(characterApi.middleware)
-});
-setupListeners(store.dispatch);
-function Fallback() {
-  return /* @__PURE__ */ jsxs("div", { className: "fallback-container", children: [
-    /* @__PURE__ */ jsx("p", { children: "Oops, an error occurred..." }),
-    /* @__PURE__ */ jsx("p", { children: "Run away from the error!" })
+const img404 = "/assets/404-2-C-9cy8-C.jpeg";
+function NotFoundPage() {
+  return /* @__PURE__ */ jsxs("div", { className: "layout404", "data-testid": "pageNotFound-element", children: [
+    /* @__PURE__ */ jsx("img", { className: "pic404", src: img404, alt: "not found" }),
+    /* @__PURE__ */ jsx("h2", { children: "404 - PAGE NOT FOUND" }),
+    /* @__PURE__ */ jsxs("p", { children: [
+      "The page you are looking for might have been removed, ",
+      /* @__PURE__ */ jsx("br", {}),
+      " had its name changed, or is temporarily unavailable."
+    ] }),
+    /* @__PURE__ */ jsx(Link, { to: "/", children: /* @__PURE__ */ jsx("button", { onClick: () => false, children: "GO TO HOME PAGE" }) })
   ] });
 }
-class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch(error, errorInfo) {
-    console.error("ErrorBoundary caught an error", error, errorInfo);
-  }
-  render() {
-    if (this.state.hasError) {
-      return /* @__PURE__ */ jsx(Fallback, {});
-    }
-    return this.props.children;
-  }
-}
-const ThemeSelector = () => {
-  const { theme, setTheme } = useContext(ThemeContext);
-  const handleThemeChange = (e) => {
-    setTheme(e.target.value);
-  };
-  return /* @__PURE__ */ jsxs("div", { className: "theme-selector", "data-testid": "theme-provider", children: [
-    /* @__PURE__ */ jsx("label", { htmlFor: "theme", children: "Select Theme: " }),
-    /* @__PURE__ */ jsxs("select", { id: "theme", value: theme, onChange: handleThemeChange, children: [
-      /* @__PURE__ */ jsx("option", { value: "light", children: "Light" }),
-      /* @__PURE__ */ jsx("option", { value: "dark", children: "Dark" })
-    ] })
-  ] });
-};
-const SearchComponent = ({ initialSearchTerm }) => {
-  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  useEffect(() => {
-  }, []);
-  const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-  return /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsxs(
-    Form,
-    {
-      id: "main-search",
-      role: "search",
-      method: "post",
-      children: [
-        /* @__PURE__ */ jsx("input", { type: "text", value: searchTerm, name: "name", onChange: handleInputChange }),
-        /* @__PURE__ */ jsx("button", { onClick: () => false, children: "Search" })
-      ]
-    }
-  ) });
-};
 function Loader() {
   return /* @__PURE__ */ jsx("div", { className: "loader", "data-testid": "loader-element" });
 }
@@ -281,7 +287,8 @@ const DetailedView = ({ characterId, onClose }) => {
       /* @__PURE__ */ jsxs("p", { children: [
         /* @__PURE__ */ jsx("strong", { children: "Species:" }),
         " ",
-        character.species
+        character.species,
+        "sfsdsdfsdf"
       ] }),
       /* @__PURE__ */ jsxs("p", { children: [
         /* @__PURE__ */ jsx("strong", { children: "Gender:" }),
@@ -300,21 +307,6 @@ const DetailedView = ({ characterId, onClose }) => {
     ] })
   ] });
 };
-const img404 = "/assets/404-2-C-9cy8-C.jpeg";
-function NotFoundPage() {
-  return /* @__PURE__ */ jsxs("div", { className: "layout404", "data-testid": "pageNotFound-element", children: [
-    /* @__PURE__ */ jsx("img", { className: "pic404", src: img404, alt: "not found" }),
-    /* @__PURE__ */ jsx("h2", { children: "404 - PAGE NOT FOUND" }),
-    /* @__PURE__ */ jsxs("p", { children: [
-      "The page you are looking for might have been removed, ",
-      /* @__PURE__ */ jsx("br", {}),
-      " had its name changed, or is temporarily unavailable."
-    ] }),
-    /* @__PURE__ */ jsx(Link, { to: "/", children: /* @__PURE__ */ jsx("button", { onClick: () => false, children: "GO TO HOME PAGE" }) })
-  ] });
-}
-const useAppDispatch = () => useDispatch();
-const useAppSelector = useSelector;
 const ResultsComponent = ({ searchTerm, page, handleChClick, characterId }) => {
   const dispatch = useAppDispatch();
   const selectedCharacterId = useAppSelector((state) => state.characters.selectedCharacterId);
@@ -437,9 +429,16 @@ const ResultsComponent = ({ searchTerm, page, handleChClick, characterId }) => {
     selectedCharacterId && /* @__PURE__ */ jsx("div", { className: "details-section", children: /* @__PURE__ */ jsx(DetailedView, { characterId: selectedCharacterId, onClose: handleCloseDetails }) })
   ] });
 };
+const store = configureStore({
+  reducer: {
+    [characterApi.reducerPath]: characterApi.reducer,
+    characters: charactersReducer
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(characterApi.middleware)
+});
+setupListeners(store.dispatch);
 const loader = async ({ params, request }) => {
-  invariant(params.pageNum, "Missing contactId param");
-  const page = params.pageNum;
+  const page = params.pageNum ?? "1";
   const url = new URL(request.url);
   const name = url.searchParams.get("name");
   return { pageNumber: page, name: name ?? void 0 };
@@ -473,13 +472,20 @@ const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: Page,
   loader
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "./assets/entry.client-DQFPOMQY.js", "imports": ["./assets/components-C7w5KGCO.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "./assets/root-Bm58I76l.js", "imports": ["./assets/components-C7w5KGCO.js", "./assets/ThemeContext-BEsUXrFM.js"], "css": [] }, "routes/page.$pageNum": { "id": "routes/page.$pageNum", "parentId": "root", "path": "page/:pageNum", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "./assets/page._pageNum-iJ05dVz2.js", "imports": ["./assets/components-C7w5KGCO.js", "./assets/ThemeContext-BEsUXrFM.js"], "css": ["./assets/page-C4OKyjWd.css"] } }, "url": "./assets/manifest-3e7a7ed2.js", "version": "3e7a7ed2" };
+function Index() {
+  return /* @__PURE__ */ jsx("p", { id: "index-page", children: "This is a demo for Remix." });
+}
+const route2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: Index
+}, Symbol.toStringTag, { value: "Module" }));
+const serverManifest = { "entry": { "module": "/assets/entry.client-BILAbPl9.js", "imports": ["/assets/jsx-runtime-C2_ZV5RT.js", "/assets/components--m7cAfHq.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/root-Cutw2jMF.js", "imports": ["/assets/jsx-runtime-C2_ZV5RT.js", "/assets/components--m7cAfHq.js", "/assets/ThemeContext-DeGVsnbL.js"], "css": [] }, "routes/pages.$pageNum": { "id": "routes/pages.$pageNum", "parentId": "root", "path": "pages/:pageNum", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/pages._pageNum-CiQt6UmE.js", "imports": ["/assets/jsx-runtime-C2_ZV5RT.js", "/assets/ThemeContext-DeGVsnbL.js", "/assets/components--m7cAfHq.js"], "css": ["/assets/pages-C_VQv1D_.css"] }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_index-Z9-4HFho.js", "imports": ["/assets/jsx-runtime-C2_ZV5RT.js"], "css": [] } }, "url": "/assets/manifest-57c2bf59.js", "version": "57c2bf59" };
 const mode = "production";
 const assetsBuildDirectory = "build\\client";
 const basename = "/";
 const future = { "v3_fetcherPersist": false, "v3_relativeSplatPath": false, "v3_throwAbortReason": false, "unstable_singleFetch": false, "unstable_lazyRouteDiscovery": false };
 const isSpaMode = false;
-const publicPath = "./";
+const publicPath = "/";
 const entry = { module: entryServer };
 const routes = {
   "root": {
@@ -490,13 +496,21 @@ const routes = {
     caseSensitive: void 0,
     module: route0
   },
-  "routes/page.$pageNum": {
-    id: "routes/page.$pageNum",
+  "routes/pages.$pageNum": {
+    id: "routes/pages.$pageNum",
     parentId: "root",
-    path: "page/:pageNum",
+    path: "pages/:pageNum",
     index: void 0,
     caseSensitive: void 0,
     module: route1
+  },
+  "routes/_index": {
+    id: "routes/_index",
+    parentId: "root",
+    path: void 0,
+    index: true,
+    caseSensitive: void 0,
+    module: route2
   }
 };
 export {

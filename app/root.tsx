@@ -1,7 +1,7 @@
 import {Meta, Links, ScrollRestoration, Scripts} from "@remix-run/react";
 import {MetaFunction} from "@remix-run/node";
 import {Outlet} from "react-router-dom";
-import {ThemeProvider} from "./context/ThemeContext";
+import {ThemeProvider} from "./lib/context/ThemeContext";
 
 
 export const meta: MetaFunction = () => {

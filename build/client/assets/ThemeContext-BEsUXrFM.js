@@ -1,1 +1,0 @@
-import{r as e,n as s}from"./components-C7w5KGCO.js";const a=e.createContext(void 0),m=({children:t})=>{const[r,o]=e.useState("light");return s.jsx(a.Provider,{value:{theme:r,setTheme:o},children:t})};export{m as T,a};

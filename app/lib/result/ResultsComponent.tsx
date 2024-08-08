@@ -4,17 +4,17 @@ import {
   addSelectedItem,
   removeSelectedItem,
   clearSelectedItems,
-} from '../../charactersSlice';
+} from '../charactersSlice';
 import '../search/search.css';
 import './resultComponent.css';
-import '../pagination/pagination.css';
-import DetailedView from '../detailedView/DetailedView';
-import NotFoundPage from '../../pages/notFoundPage/NotFoundPage';
-import Loader from '../loader/Loader.tsx';
+import '../components/pagination/pagination.css';
 import saveAs from 'file-saver';
-import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
-import {useGetCharactersQuery} from "../../services/characterApi";
+import {useAppDispatch, useAppSelector} from "../hooks/hooks";
+import {useGetCharactersQuery} from "../services/characterApi";
 import {Link} from "@remix-run/react";
+import NotFoundPage from "../pages/notFoundPage/NotFoundPage";
+import Loader from "../components/loader/Loader";
+import DetailedView from "../components/detailedView/DetailedView";
 
 
 

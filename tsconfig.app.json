@@ -27,8 +27,8 @@
     "allowSyntheticDefaultImports": true
   },
   "include": [
-    "src/**/*",
+    "app/**/*",
     "node_modules/vitest/globals.d.ts",
   ],
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules", "build", "old", "src15"]
 }

@@ -1,19 +1,18 @@
-import {Provider} from "react-redux";
 import {useState, useContext} from "react";
 import {LoaderFunctionArgs} from "@remix-run/node";
-import invariant from "tiny-invariant";
 import {useLoaderData} from "@remix-run/react";
-import { store } from '../store';
-import ErrorBoundary from "../components/errBoundary/ErrorBoundary";
-import {ThemeContext} from "../context/ThemeContext";
-import ThemeSelector from "../components/themeSelector/ThemeSelector";
-import SearchComponent from "../components/search/SearchComponent";
-import ResultsComponent from "../components/result/ResultsComponent";
+import ThemeSelector from "../lib/themeSelector/ThemeSelector";
+import {Provider} from "react-redux";
+import ErrorBoundary from "../lib/errBoundary/ErrorBoundary";
+import SearchComponent from "../lib/search/SearchComponent";
+import ResultsComponent from "../lib/result/ResultsComponent";
+import {store} from "../store";
+import {ThemeContext} from "../lib/context/ThemeContext";
 
 
 export const loader = async ({params, request}: LoaderFunctionArgs) => {
-    invariant(params.pageNum, "Missing contactId param");
-    const page = params.pageNum;
+    //invariant(params.pageNum, "Missing contactId param");
+    const page = params.pageNum ?? "1";
 
 
     const url = new URL(request.url);
@@ -29,6 +28,7 @@ export const loader = async ({params, request}: LoaderFunctionArgs) => {
 
 export default function Page() {
     const { pageNumber, name } = useLoaderData<typeof loader>();
+    // const { pageNumber, name } = {pageNumber: "1", name: "2"};
 
     // const pageNumber = pageNumber;
     let page = parseInt(pageNumber);
@@ -56,18 +56,18 @@ export default function Page() {
         throw new Error('Test error');
     };
 
-    return ( <div></div>
-        // <Provider store={store}>
-        //     <ErrorBoundary>
-        //         <div className={`app-container ${theme}`} data-testid="app-component">
-        //             <ThemeSelector />
-        //             <div className="search-form">
-        //                 <SearchComponent initialSearchTerm={name ? name : ''} />
-        //                 <button onClick={throwError}>Throw Error</button>
-        //             </div>
-        //             <ResultsComponent searchTerm={name} page={page} handleChClick={handleChClick} characterId={characterId} />
-        //         </div>
-        //     </ErrorBoundary>
-        // </Provider>
+    return (
+        <Provider store={store}>
+             <ErrorBoundary>
+                 <div className={`app-container ${theme}`} data-testid="app-component">
+                     <ThemeSelector />
+                     <div className="search-form">
+                         <SearchComponent initialSearchTerm={name ? name : ''} />
+                         <button onClick={throwError}>Throw Error</button>
+                     </div>
+                     <ResultsComponent searchTerm={name} page={page} handleChClick={handleChClick} characterId={characterId} />
+                 </div>
+             </ErrorBoundary>
+        </Provider>
     );
 };
