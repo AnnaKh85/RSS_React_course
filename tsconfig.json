@@ -14,9 +14,10 @@
     "baseUrl": "./dist/",
 
     "paths": {
-      "@/*": ["src/*"],
-      "@app/*": ["src/app/*"],
-      "@assets/*": ["src/assets/*"]
+      "@/*": ["app/*"],
+      "@app/*": ["app/*"],
+      "@assets/*": ["app/assets/*"],
+      "~/*": ["./app/*"]
     },
 
     /* Bundler mode */
