@@ -1,1 +1,0 @@
-import{r as e,j as s}from"./jsx-runtime-C2_ZV5RT.js";const a=e.createContext(void 0),n=({children:t})=>{const[r,o]=e.useState("light");return s.jsx(a.Provider,{value:{theme:r,setTheme:o},children:t})};export{n as T,a};

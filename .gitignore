@@ -51,3 +51,4 @@ gen
 /.vite/
 /dist/
 /coverage/
+/build/

@@ -10,29 +10,19 @@ import {ThemeContext} from "../lib/context/ThemeContext";
 
 
 export const loader = async ({params, request}: LoaderFunctionArgs) => {
-    //invariant(params.pageNum, "Missing contactId param");
     const page = params.pageNum ?? "1";
-
 
     const url = new URL(request.url);
     const name  = url.searchParams.get("name");
 
-    // const contact = await getContact(params.contactId);
-    // if (!contact) {
-    //     throw new Response("Not Found", { status: 404 });
-    // }
     return { pageNumber: page, name: (name ?? undefined) };
 };
 
 
 export default function Page() {
     const { pageNumber, name } = useLoaderData<typeof loader>();
-    // const { pageNumber, name } = {pageNumber: "1", name: "2"};
 
-    // const pageNumber = pageNumber;
     let page = parseInt(pageNumber);
-    // let page = 1
-    //const name = props.searchParams?.name;
 
     if (Number.isNaN(page)) {
         page = 1;
@@ -41,11 +31,8 @@ export default function Page() {
     const [characterId, setCharacterId] = useState<number | null>(null);
     const { theme } = useContext(ThemeContext)!;
 
-    console.log('pageNumber=' + pageNumber + ',name=' + name);
+    //console.log('pageNumber=' + pageNumber + ',name=' + name);
 
-    // const handleSearch = (term: string) => {
-    //     setSearchTerm(term);
-    // };
 
     const handleChClick = (characterId: number) => {
         setCharacterId(characterId);

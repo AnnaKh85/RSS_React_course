@@ -2,8 +2,8 @@
 // Check that the component retrieves the value from the local storage upon mounting.
 
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import SearchComponent from '../components/search/SearchComponent.tsx';
+import {describe, it, expect, vi, beforeEach} from 'vitest';
+import SearchComponent from "../../app/lib/search/SearchComponent";
 
 describe('SearchComponent', () => {
   beforeEach(() => {

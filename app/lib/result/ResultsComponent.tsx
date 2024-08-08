@@ -31,31 +31,19 @@ const ResultsComponent: React.FC<ResultsComponentProps> = ({ searchTerm, page, h
   const selectedCharacterId = useAppSelector((state) => state.characters.selectedCharacterId);
   const selectedItems = useAppSelector((state) => state.characters.selectedItems);
 
-  // const queryParams = useSearchParams();
-
-  // const pageParam = queryParams.get('page');
-  // const pn = pageNumber;
-  // const page = pn ? parseInt(pn) : 1;
 
   const { data, error, isLoading } = useGetCharactersQuery({ name: searchTerm, page });
 
   useEffect(() => {
-    // const characterIdParam = queryParams.get('characterId');
     if (characterId) {
       dispatch(setSelectedCharacterId(characterId));
     }
-  }, [/*location.search,*/ dispatch]);
+  }, [dispatch]);
 
-  /*useEffect(() => {
-    if (!queryParams.has('page') || queryParams.get('name') !== searchTerm) {
-      //navigate(`?name=${searchTerm}&page=1`);
-    }
-  }, [searchTerm, navigate, queryParams]);*/
 
   const handleCharacterClick = (id: number) => {
     dispatch(setSelectedCharacterId(id));
     handleChClick(id);
-    //navigate(`?name=${searchTerm}&page=${page}&characterId=${id}`);
   };
 
   const handleCloseDetails = () => {

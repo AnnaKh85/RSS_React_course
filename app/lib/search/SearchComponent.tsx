@@ -1,6 +1,6 @@
-import type { ChangeEvent } from 'react';
-import React, { useState, useEffect } from 'react';
-import {Form, Link} from "@remix-run/react";
+import type {ChangeEvent} from 'react';
+import React, {useState, useEffect} from 'react';
+import {Link} from "@remix-run/react";
 
 interface SearchComponentProps {
   initialSearchTerm: string;
@@ -8,21 +8,18 @@ interface SearchComponentProps {
 
 const SearchComponent: React.FC<SearchComponentProps> = ({ initialSearchTerm }) => {
   const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
-  //const [searchTerm, setSearchTerm] = useSearchTerm('searchTerm', '');
 
   useEffect(() => {
-    // setSearchTerm(localStorage.getItem('searchTerm') || '')
+      setSearchTerm(localStorage.getItem('searchTerm') || '')
   }, []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  // const handleSearch = () => {
-  //   const trimmedTerm = searchTerm.trim();
-  //   onSearch(trimmedTerm);
-  //   localStorage.setItem('searchTerm', trimmedTerm);
-  // };
+  const saveSearchIntoLocalStorage = function() {
+      localStorage.setItem('searchTerm', searchTerm);
+  }
 
 
     const getLinkHref: (page: number, searchTerm?: string) => object = (page, searchTerm) => {
@@ -40,15 +37,10 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ initialSearchTerm }) 
 
   return (
       <div>
-          <Form id="main-search"
-                role="search"
-                method="post"
-          >
-              <input type="text" value={searchTerm} name="name" onChange={handleInputChange} />
-              <Link to={getLinkHref(1, searchTerm)} relative="path">
-                <button onClick={() => false} typeof="button">Search</button>
-              </Link>
-          </Form>
+          <input type="text" value={searchTerm} name="name" onChange={handleInputChange} />
+          <Link to={getLinkHref(1, searchTerm)} relative="path">
+            <button onClick={saveSearchIntoLocalStorage} typeof="button">Search</button>
+          </Link>
       </div>
   );
 };
