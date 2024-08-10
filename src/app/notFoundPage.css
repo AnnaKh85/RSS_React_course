@@ -1,0 +1,12 @@
+.pic404 {
+    width: 450px;
+}
+
+.layout404 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    width: 100%;
+}

@@ -1,0 +1,94 @@
+.result-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: flex-start;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.app-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.selected-character-checkbox {
+    cursor: pointer;
+    width: 100%;
+    margin: 0 auto 10px;
+    height: 20px;
+    accent-color: #61dafbaa;
+    transition: transform 0.2s;
+}
+
+.selected-character-checkbox:hover {
+    transform: scale(1.1);
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.flyout {
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.flyout p {
+    margin: 0;
+    font-size: 1em;
+    color: #333;
+}
+
+.flyout button {
+    background-color: #646cff;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid rgba(51, 51, 51, 0.33);
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    transition: background-color 0.25s, border-color 0.25s;
+}
+
+.flyout button:hover {
+    background-color: #535bf2;
+}
+
+.app-container.light {
+    background-color: white;
+    color: #242424;
+}
+
+.app-container.light span{
+    color: #242424;
+}
+
+.app-container.dark span{
+    color: white;
+}
+
+.app-container.light label{
+    color: #242424;
+}
+
+.app-container.dark label{
+    color: white;
+}
+
+.app-container.dark {
+    background-color: #242424;
+    color: white;
+}
+
