@@ -13,13 +13,13 @@ describe('SearchComponent', () => {
   it('retrieves the value from localStorage upon mounting', () => {
     localStorage.setItem('searchTerm', 'Initial Term');
 
-    render(<SearchComponent initialSearchTerm=""/>);
+    render(<SearchComponent initialSearchTerm="" />);
 
     expect(screen.getByRole('textbox')).toHaveValue('Initial Term');
   });
 
   it('saves the entered value to localStorage when the Search button is clicked', () => {
-    render(<SearchComponent initialSearchTerm=""/>);
+    render(<SearchComponent initialSearchTerm="" />);
 
     const input = screen.getByRole('textbox');
     const searchButton = screen.getByRole('button', { name: /search/i });
@@ -33,7 +33,7 @@ describe('SearchComponent', () => {
 
   it('calls the onSearch prop with the trimmed input value when the Search button is clicked', () => {
     const mockOnSearch = vi.fn();
-    render(<SearchComponent initialSearchTerm=""/>);
+    render(<SearchComponent initialSearchTerm="" />);
 
     const input = screen.getByRole('textbox');
     const searchButton = screen.getByRole('button', { name: /search/i });
