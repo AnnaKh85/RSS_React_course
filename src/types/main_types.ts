@@ -1,4 +1,5 @@
 export type Person = {
+    id: number,
     name: string,
     age: number | string,
     email: string,
@@ -17,7 +18,8 @@ export enum Gender {
 
 export type Picture = {
     name: string,
-    data: string
+    data: string,
+    size: number
 }
 
 

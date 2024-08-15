@@ -1,4 +1,6 @@
 import './App.css'
+import {Details} from "./views/details/Details";
+import {NavLink} from "react-router-dom";
 
 function App() {
 
@@ -6,20 +8,22 @@ function App() {
     <>
         <div id="sidebar">
             <h2>Ссылки
-                <a href={"/about"} style={{fontWeight: "lighter"}}>&nbsp;?&nbsp;</a>
+                <NavLink to={"/about"} style={{fontWeight: "lighter"}}>&nbsp;?&nbsp;</NavLink>
             </h2>
             <nav>
                 <ol>
                     <li>
-                        <a href={"/uncontrolled.components.form"}>Uncontrolled components</a>
+                        <NavLink to={"/uncontrolled.components.form"}>Uncontrolled components</NavLink>
                     </li>
                     <li>
-                        <a href={"/react.hook.form.components.form"}>React Hook Form</a>
+                        <NavLink to={"/react.hook.form.components.form"}>React Hook Form</NavLink>
                     </li>
                 </ol>
             </nav>
         </div>
-        <div id="detail"></div>
+        <div id="detail">
+            <Details />
+        </div>
     </>
   )
 }

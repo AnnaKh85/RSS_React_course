@@ -7,7 +7,7 @@ type GenderRow = {
 }
 
 
-const gendersReducer = createSlice({
+const gendersSlice = createSlice({
     name: "genders",
     initialState: {
         list: [
@@ -18,5 +18,5 @@ const gendersReducer = createSlice({
     reducers: {}
 });
 
-export default gendersReducer.reducer;
+export default gendersSlice.reducer;
 

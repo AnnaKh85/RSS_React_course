@@ -1,13 +1,15 @@
 import {configureStore} from "@reduxjs/toolkit";
-import gendersReducer from "./parts/genderReducer";
-import countriesReducer from "./parts/countryReducer";
-import personsSlice from "./parts/personsReducer";
+import gendersReducer from "./parts/genderSlice";
+import countriesReducer from "./parts/countrySlice";
+import personsSlice from "./parts/personsSlice";
+import personsSeqSlice from "./parts/personsSeqSlice";
 
 export const store = configureStore({
     reducer: {
         genders: gendersReducer,
         countries: countriesReducer,
-        persons: personsSlice
+        persons: personsSlice,
+        personSeq: personsSeqSlice
     }
 });
 

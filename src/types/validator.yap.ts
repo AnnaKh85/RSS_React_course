@@ -1,9 +1,9 @@
 import * as yup from 'yup';
-import {b} from "vite/dist/node/types.d-aGj9QkWt";
-
+import {AnyObject} from 'yup';
 
 
 const PASSWORD_SPECIAL_CHARACTERS = /!@#$%^&*;,./;
+const FILE_SIZE = 10 * 1024 * 1024; //Megabytes
 
 
 function isFirstLetterBig(test: string): boolean {
@@ -35,14 +35,27 @@ function isPasswordStrength(test: string): boolean {
     return false;
 }
 
-function isFileCorrectExtension(test: object): boolean {
+function isFileCorrectExtension(test: AnyObject): boolean {
+    const extensions = ['jpg', 'png', 'jpeg'];
 
+    const parts = test.name.split(".");
+    const currentExt = (parts && parts.length) ? parts.pop()?.toLowerCase() : undefined;
+
+    if (! currentExt) {
+        return true;
+    }
+
+    return extensions.indexOf(currentExt) > -1;
+}
+
+export function isFileTooBig(test: AnyObject): boolean {
+    const size = test.size;
+    return FILE_SIZE >= size;
 }
 
 
-
-
 const personSchema = yup.object().shape({
+    id: yup.number(),
     name: yup.string()
         .min(1)
         .max(100)
@@ -72,8 +85,14 @@ const personSchema = yup.object().shape({
         .isTrue(),
     country: yup.string()
         .required(),
-    picture: yup.object()
-        .required(),
+    picture: yup.object({
+        name: yup.string().required("File not selected"),
+        data: yup.string(),
+        size: yup.number()
+    })
+        .required()
+        .test("isFileCorrectExt", "Wrong file type", isFileCorrectExtension)
+        .test("isFileSizeTooBig", "Wrong file size (> 10 Mb)", isFileTooBig),
     createdType: yup.boolean()
 
 });
