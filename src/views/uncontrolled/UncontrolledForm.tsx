@@ -1,8 +1,9 @@
 import React, {useRef, RefObject} from "react";
-import {useAppSelector} from "../../store/hooks";
+import {useAppSelector, useAppDispatch} from "../../store/hooks";
 import {Person} from "../../types/main_types";
 import personSchema from "../../types/validator.yap";
 import {toBase64} from "../../utils/convert";
+import {insertPerson} from "../../store/parts/personsReducer";
 
 export const UncontrolledForm: React.FC = () => {
     // const [pictSrc, setPictSrc] = useState<string | undefined>(undefined);
@@ -10,6 +11,8 @@ export const UncontrolledForm: React.FC = () => {
 
     const genders = useAppSelector(state => state.genders);
     const counties = useAppSelector(state => state.countries);
+
+    const dispatch = useAppDispatch();
 
 
     const inputNameRef = useRef<HTMLInputElement>(null);
@@ -65,7 +68,7 @@ export const UncontrolledForm: React.FC = () => {
         }
 
 
-        const res: Person = {
+        const pers: Person = {
             name: inputNameRef.current?.value!,
             age: inputAgeRef.current?.value!,
             email: inputEmailRef.current?.value!,
@@ -77,12 +80,14 @@ export const UncontrolledForm: React.FC = () => {
                 name: selectedPictureName ?? "",
                 data: selectedPicture ?? ""
             },
-            country: inputCountryRef.current?.value!
-
+            country: inputCountryRef.current?.value!,
+            createdType: false
         };
 
-        personSchema.validate(res).then(function(data) {
+        personSchema.validate(pers, {abortEarly: false, stripUnknown: true}).then(function(data) {
             console.log(data);
+
+            dispatch(insertPerson(data));
 
         }, function(err) {
             console.log(err);

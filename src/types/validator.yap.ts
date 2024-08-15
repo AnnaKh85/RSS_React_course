@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import {b} from "vite/dist/node/types.d-aGj9QkWt";
 
 
 
@@ -34,6 +35,12 @@ function isPasswordStrength(test: string): boolean {
     return false;
 }
 
+function isFileCorrectExtension(test: object): boolean {
+
+}
+
+
+
 
 const personSchema = yup.object().shape({
     name: yup.string()
@@ -66,7 +73,8 @@ const personSchema = yup.object().shape({
     country: yup.string()
         .required(),
     picture: yup.object()
-        .required()
+        .required(),
+    createdType: yup.boolean()
 
 });
 

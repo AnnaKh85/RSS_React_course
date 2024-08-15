@@ -7,7 +7,8 @@ export type Person = {
     gender: Gender | string,
     acceptedTaC: boolean,
     picture: Picture,
-    country: string
+    country: string,
+    createdType?: boolean //true = created from React Forms, false = from uncontrolled
 }
 
 export enum Gender {

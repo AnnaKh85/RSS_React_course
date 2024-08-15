@@ -6,8 +6,8 @@ type CountryRow = {
 }
 
 
-const countryReducer = createSlice({
-    name: "country",
+const countriesReducer = createSlice({
+    name: "countries",
     initialState: {
         list: [
             {key: "AQ", value: "Antarctica"},
@@ -19,5 +19,5 @@ const countryReducer = createSlice({
     reducers: {}
 });
 
-export default countryReducer.reducer;
+export default countriesReducer.reducer;
 
