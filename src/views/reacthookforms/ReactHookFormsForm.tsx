@@ -1,22 +1,16 @@
-import React, {RefObject} from "react";
+import React from "react";
 import {useForm} from "react-hook-form";
-import {Person} from "../../types/main_types";
 import {useNavigate} from "react-router";
 import {useAppDispatch, useAppSelector} from "../../store/hooks";
 import {PASSW_HELP} from "../../types/validation.const";
-
-
-
-type IFormInput = Omit<Person, "id" | "createdType"> & {
-    rawFile: File
-};
-
+import {yupResolver} from "@hookform/resolvers/yup";
+import personSchema from "../../types/validator.yap";
 
 
 export const ReactHookFormsForm: React.FC = () => {
     const navigate = useNavigate();
 
-    const {register } = useForm<IFormInput>();
+    const {register, trigger, formState: {errors}} = useForm({resolver: yupResolver(personSchema)});
 
     const genders = useAppSelector(state => state.genders);
     const counties = useAppSelector(state => state.countries);
@@ -55,8 +49,22 @@ export const ReactHookFormsForm: React.FC = () => {
 
 
 
-
     function submitHandle() {
+        trigger().then(function(data) {
+            console.log(data);
+        }, function(err) {
+            console.log(err);
+        });
+
+
+        // handleSubmit(function(data) {
+        //     console.log(data);
+        //
+        // }, function(err) {
+        //     console.log(err);
+        //
+        // });
+
     /*    const selectedFiles = inputPictureRef.current?.files;
         let selectedPicture;
         let selectedPictureName;
@@ -130,6 +138,7 @@ export const ReactHookFormsForm: React.FC = () => {
                     email
                 </label>
                 <input {...register("email")} />
+                <p>{errors.email?.message}</p>
                 <label>
                     password
                 </label>
@@ -149,7 +158,7 @@ export const ReactHookFormsForm: React.FC = () => {
                 <label>
                     Upload picture
                 </label>
-                <input type="file" accept=".png,.jpeg,.jpg" {...register("rawFile")} />
+                <input type="file" accept=".png,.jpeg,.jpg" {...register("picture.rawFile")} />
                 <label>
                     country
                 </label>

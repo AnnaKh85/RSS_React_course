@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 import {AnyObject} from 'yup';
+import {Person, YesNo, Gender} from "./main_types";
 
 
 const PASSWORD_SPECIAL_CHARACTERS = /!@#$%^&*;,./;
@@ -36,6 +37,8 @@ function isPasswordStrength(test: string): boolean {
 }
 
 function isFileCorrectExtension(test: AnyObject): boolean {
+    if (!test || !test.name) return true;
+
     const extensions = ['jpg', 'png', 'jpeg'];
 
     const parts = test.name.split(".");
@@ -54,7 +57,7 @@ export function isFileTooBig(test: AnyObject): boolean {
 }
 
 
-const personSchema = yup.object().shape({
+const personSchema = yup.object<Person>().shape({
     id: yup.number(),
     name: yup.string()
         // .min(1)
@@ -77,18 +80,22 @@ const personSchema = yup.object().shape({
         .matches(/[a-zA-Z0-9]/, 'Password can only contain Latin letters.')
         .test("isPasswordStrength", "1 number, 1 uppercased letter, 1 lowercased letter, 1 special character)", isPasswordStrength),
     passwordRepeat: yup.string()
-        .oneOf([yup.ref("password"), ""], "Passwords are not identical"),
-    gender: yup.string()
-        .required(),
-    acceptedTaC: yup.boolean()
         .required()
-        .isTrue(),
+        .oneOf([yup.ref("password"), ""], "Passwords are not identical"),
+    gender: yup.mixed<Gender>()
+        .required()
+        .oneOf([Gender.M, Gender.F])
+    ,
+    acceptedTaC: yup.mixed<YesNo>()
+        .required()
+        .oneOf([YesNo.Y]),
     country: yup.string()
         .required(),
     picture: yup.object({
         name: yup.string().required("File not selected"),
         data: yup.string(),
-        size: yup.number()
+        size: yup.number(),
+        rawFile: yup.object()
     })
         .required()
         .test("isFileCorrectExt", "Wrong file type", isFileCorrectExtension)

@@ -1,6 +1,6 @@
 import React, {useRef, RefObject, useState} from "react";
 import {useAppSelector, useAppDispatch} from "../../store/hooks";
-import {Person} from "../../types/main_types";
+import {Person, YesNo, parseGender} from "../../types/main_types";
 import personSchema from "../../types/validator.yap";
 import {toBase64} from "../../utils/convert";
 import {insertPerson} from "../../store/parts/personsSlice";
@@ -114,12 +114,12 @@ export const UncontrolledForm: React.FC = () => {
         const pers: Person = {
             id: personSeq.value,
             name: inputNameRef.current?.value!,
-            age: inputAgeRef.current?.value!,
+            age: inputAgeRef.current?.valueAsNumber!,
             email: inputEmailRef.current?.value!,
             password: inputPassRef.current?.value!,
             passwordRepeat: inputPass2Ref.current?.value!,
-            gender: inputGenderRef.current?.value!,
-            acceptedTaC: inputTaCRef.current?.checked!,
+            gender: parseGender(inputGenderRef.current?.value!),
+            acceptedTaC: inputTaCRef.current?.checked! ? YesNo.Y : YesNo.N,
             picture: {
                 name: selectedPictureName ?? "",
                 data: selectedPicture ?? "",

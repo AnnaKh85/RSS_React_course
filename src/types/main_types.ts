@@ -1,12 +1,12 @@
 export type Person = {
-    id: number,
+    id?: number,
     name: string,
-    age: number | string,
+    age: number,
     email: string,
     password: string,
     passwordRepeat: string,
-    gender: Gender | string,
-    acceptedTaC: boolean,
+    gender?: Gender,
+    acceptedTaC: YesNo,
     picture: Picture,
     country: string,
     createdType?: boolean //true = created from React Forms, false = from uncontrolled
@@ -16,10 +16,15 @@ export enum Gender {
     M = "M", F = "F"
 }
 
+export enum YesNo {
+    Y = "Y", N = "N"
+}
+
 export type Picture = {
     name: string,
     data: string,
-    size: number
+    size: number,
+    rawFile?: File
 }
 
 
@@ -29,7 +34,8 @@ export type SubmitResult = {
 }
 
 
-export function parseGender(text: string): Gender {
+export function parseGender(text: string): Gender | undefined {
+    if (!text) return undefined;
     if (Gender.F == text) return Gender.F;
     return Gender.M;
 }
