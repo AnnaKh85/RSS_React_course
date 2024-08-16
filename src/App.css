@@ -197,10 +197,11 @@ i {
   width: auto;
 }
 
-ul.validation-block {
+ul.validation-block, p.validation-block {
   background-color: #fa8484;
 }
 
 ul.validation-block li {
   text-align: left;
 }
+

@@ -10,6 +10,14 @@ export const store = configureStore({
         countries: countriesReducer,
         persons: personsSlice,
         personSeq: personsSeqSlice
+    },
+    middleware: getDefaultMiddleware => {
+        return getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActionPaths: ["payload.picture.rawFile",],
+                ignoredPaths: [/picture.rawFile/gm,],
+            }
+        });
     }
 });
 

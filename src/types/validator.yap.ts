@@ -1,15 +1,40 @@
 import * as yup from 'yup';
 import {AnyObject} from 'yup';
 import {Person, YesNo, Gender} from "./main_types";
+import {PASSW_HELP} from "./validation.const";
 
 
 const PASSWORD_SPECIAL_CHARACTERS = /!@#$%^&*;,./;
-const FILE_SIZE = 10 * 1024 * 1024; //Megabytes
+const FILE_SIZE = 1 * 1024 * 1024; //Megabytes
 
+function isFirstLetterRusEng(test: string): boolean {
+    if (test && test.length > 0) {
+        const patternFirstLetter = /^[a-zA-Zа-яА-Я]+/;
+        if (patternFirstLetter.test(test)) {
+            //ok
+        } else {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 function isFirstLetterBig(test: string): boolean {
     if (test && test.length > 0) {
         const c = test.substring(0,1);
+
+        const patternFirstDigit = /^\d+/;
+        if (patternFirstDigit.test(test)) {
+            return false;
+        }
+
+        const patternFirstLetter = /[a-zA-Zа-яА-Я]+/;
+        if (patternFirstLetter.test(test)) {
+            //ok
+        } else {
+            return false;
+        }
 
         return c === c.toUpperCase();
     }
@@ -51,10 +76,13 @@ function isFileCorrectExtension(test: AnyObject): boolean {
     return extensions.indexOf(currentExt) > -1;
 }
 
-export function isFileTooBig(test: AnyObject): boolean {
+function isFileTooBig(test: AnyObject): boolean {
+    if (!test || !test.size || isNaN(test.size) || test.size === 0) return true;
     const size = test.size;
     return FILE_SIZE >= size;
 }
+
+
 
 
 const personSchema = yup.object<Person>().shape({
@@ -64,7 +92,8 @@ const personSchema = yup.object<Person>().shape({
         .max(100)
         // .nonNullable("name is empty")
         .required("name is empty")
-        .test("isCheckFirstBigLetter", "First letter is not capital", isFirstLetterBig),
+        .test("isCheckFirstBigLetter", "First letter is not capital", isFirstLetterBig)
+        .test("isFirstLetterRusEng", "First letter is not Russian or English", isFirstLetterRusEng),
     age: yup.number()
         .typeError("You must set age")
         .required("age is empty")
@@ -77,8 +106,8 @@ const personSchema = yup.object<Person>().shape({
         .required("password is empty")
         .min(4)
         .max(100)
-        .matches(/[a-zA-Z0-9]/, 'Password can only contain Latin letters.')
-        .test("isPasswordStrength", "1 number, 1 uppercased letter, 1 lowercased letter, 1 special character)", isPasswordStrength),
+        .matches(/[a-zA-Z0-9]/, 'Password can only contain Latin letters and numbers and special characters')
+        .test("isPasswordStrength", PASSW_HELP, isPasswordStrength),
     passwordRepeat: yup.string()
         .required()
         .oneOf([yup.ref("password"), ""], "Passwords are not identical"),
@@ -88,18 +117,18 @@ const personSchema = yup.object<Person>().shape({
     ,
     acceptedTaC: yup.mixed<YesNo>()
         .required()
-        .oneOf([YesNo.Y]),
+        .oneOf([YesNo.Y], "You must accept Terms and Conditions"),
     country: yup.string()
         .required(),
     picture: yup.object({
         name: yup.string().required("File not selected"),
-        data: yup.string(),
-        size: yup.number(),
-        rawFile: yup.object()
+        data: yup.string().required(),
+        size: yup.number().required().typeError(""),
+        rawFile: yup.mixed()
     })
         .required()
         .test("isFileCorrectExt", "Wrong file type", isFileCorrectExtension)
-        .test("isFileSizeTooBig", "Wrong file size (> 10 Mb)", isFileTooBig),
+        .test("isFileSizeTooBig", "Wrong file size (> 1 Mb)", isFileTooBig),
     createdType: yup.boolean()
 
 });

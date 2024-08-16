@@ -12,6 +12,7 @@ export type Person = {
     createdType?: boolean //true = created from React Forms, false = from uncontrolled
 }
 
+
 export enum Gender {
     M = "M", F = "F"
 }
@@ -40,3 +41,6 @@ export function parseGender(text: string): Gender | undefined {
     return Gender.M;
 }
 
+export function parseYesNo(v?: boolean): YesNo {
+    return !!v ? YesNo.Y : YesNo.N;
+}

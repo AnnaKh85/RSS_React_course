@@ -1,6 +1,6 @@
 import React, {useRef, RefObject, useState} from "react";
 import {useAppSelector, useAppDispatch} from "../../store/hooks";
-import {Person, YesNo, parseGender} from "../../types/main_types";
+import {Person, parseGender, parseYesNo} from "../../types/main_types";
 import personSchema from "../../types/validator.yap";
 import {toBase64} from "../../utils/convert";
 import {insertPerson} from "../../store/parts/personsSlice";
@@ -119,7 +119,7 @@ export const UncontrolledForm: React.FC = () => {
             password: inputPassRef.current?.value!,
             passwordRepeat: inputPass2Ref.current?.value!,
             gender: parseGender(inputGenderRef.current?.value!),
-            acceptedTaC: inputTaCRef.current?.checked! ? YesNo.Y : YesNo.N,
+            acceptedTaC: parseYesNo(inputTaCRef.current?.checked),
             picture: {
                 name: selectedPictureName ?? "",
                 data: selectedPicture ?? "",
@@ -159,19 +159,19 @@ export const UncontrolledForm: React.FC = () => {
                 <label>
                     age
                 </label>
-                <input type="number" ref={inputAgeRef} value="2" />
+                <input type="number" ref={inputAgeRef} defaultValue="2" />
                 <label>
                     email
                 </label>
-                <input type="text" ref={inputEmailRef} value="1@2.ru" />
+                <input type="text" ref={inputEmailRef} defaultValue="1@2.ru" />
                 <label>
                     password
                 </label>
-                <input type="password" value="1!qQ" ref={inputPassRef} title={PASSW_HELP} placeholder={PASSW_HELP} />
+                <input type="password" defaultValue="1!qQ" ref={inputPassRef} title={PASSW_HELP} placeholder={PASSW_HELP} />
                 <label>
                     password repeat
                 </label>
-                <input type="password" value="1!qQ" ref={inputPass2Ref} title={PASSW_HELP} placeholder={PASSW_HELP} />
+                <input type="password" defaultValue="1!qQ" ref={inputPass2Ref} title={PASSW_HELP} placeholder={PASSW_HELP} />
                 <label>
                     gender
                 </label>
@@ -191,6 +191,7 @@ export const UncontrolledForm: React.FC = () => {
             </form>
             <div>
                 <button type="button" style={{width: "120px"}} onClick={submitHandle}>Submit</button>
+                &nbsp;
                 <button type="button" style={{width: "120px"}} onClick={cancelHandle}>Cancel</button>
             </div>
         </div>

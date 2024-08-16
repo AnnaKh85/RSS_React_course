@@ -10,8 +10,8 @@ export const Details: React.FC = () => {
     function renderPersons(list: Person[]) {
         let maxId = 0;
         list.forEach((p) => {
-            if (p.id > maxId) {
-                maxId = p.id;
+            if (p.id ?? 0 > maxId) {
+                maxId = p.id ?? 0;
             }
         });
 
@@ -27,8 +27,13 @@ export const Details: React.FC = () => {
                     <td>{p.age}</td>
                     <td>{p.gender}</td>
                     <td>{p.country}</td>
-                    <td>
-                        <img alt="No picture" src={`${p.picture.data}`} width="100px" height="100px" style={{"borderWidth": "3px", "borderColor": "blue", "borderStyle": "solid"}} />
+                    <td style={{"textAlign": "center", "width": "30%"}}>
+                        <img alt="No picture"
+                             src={`${p.picture.data}`}
+                             width="auto"
+                             height="auto"
+                             style={{"borderWidth": "3px", "borderColor": "blue", "borderStyle": "solid", "maxHeight": "100px", "maxWidth": "100px"}}
+                        />
                     </td>
                 </tr>
             );
