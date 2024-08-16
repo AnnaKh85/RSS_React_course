@@ -27,6 +27,9 @@ export const Details: React.FC = () => {
                     <td>{p.age}</td>
                     <td>{p.gender}</td>
                     <td>{p.country}</td>
+                    <td>
+                        <img alt="No picture" src={`${p.picture.data}`} width="100px" height="100px" style={{"borderWidth": "3px", "borderColor": "blue", "borderStyle": "solid"}} />
+                    </td>
                 </tr>
             );
         });
@@ -41,6 +44,7 @@ export const Details: React.FC = () => {
                 <th>age</th>
                 <th>gender</th>
                 <th>country</th>
+                <th>picture</th>
             </tr>
             </thead>
             <tbody>

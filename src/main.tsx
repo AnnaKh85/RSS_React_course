@@ -8,6 +8,7 @@ import ErrorPage from "./views/errorPage/ErrorPage";
 import {UncontrolledForm} from "./views/uncontrolled/UncontrolledForm";
 import {Provider} from "react-redux";
 import {store} from "./store/store";
+import {ReactHookFormsForm} from "./views/reacthookforms/ReactHookFormsForm";
 
 
 
@@ -30,8 +31,8 @@ const router = createBrowserRouter([
                 element: <UncontrolledForm />
             },
             {
-                path: "/react.hook.form.components.form",
-                element: <UncontrolledForm />
+                path: "/react.hook.forms.components.form",
+                element: <ReactHookFormsForm />
             }
 
         ]

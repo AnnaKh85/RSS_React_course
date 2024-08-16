@@ -1,18 +1,22 @@
-import React, {useRef, RefObject, useState} from "react";
-import {useAppSelector, useAppDispatch} from "../../store/hooks";
+import React, {RefObject} from "react";
+import {useForm} from "react-hook-form";
 import {Person} from "../../types/main_types";
-import personSchema from "../../types/validator.yap";
-import {toBase64} from "../../utils/convert";
-import {insertPerson} from "../../store/parts/personsSlice";
 import {useNavigate} from "react-router";
-import {nextSeq} from "../../store/parts/personsSeqSlice";
-import {ListErrorsForUncontrolled, ErrorOutput} from "./ListErrorsForUncontrolled";
-import {ValidationError} from "yup";
+import {useAppDispatch, useAppSelector} from "../../store/hooks";
 import {PASSW_HELP} from "../../types/validation.const";
 
-export const UncontrolledForm: React.FC = () => {
+
+
+type IFormInput = Omit<Person, "id" | "createdType"> & {
+    rawFile: File
+};
+
+
+
+export const ReactHookFormsForm: React.FC = () => {
     const navigate = useNavigate();
 
+    const {register } = useForm<IFormInput>();
 
     const genders = useAppSelector(state => state.genders);
     const counties = useAppSelector(state => state.countries);
@@ -21,41 +25,27 @@ export const UncontrolledForm: React.FC = () => {
     const dispatch = useAppDispatch();
 
 
-    const inputNameRef = useRef<HTMLInputElement>(null);
-    const inputAgeRef = useRef<HTMLInputElement>(null);
-    const inputEmailRef = useRef<HTMLInputElement>(null);
-    const inputPassRef = useRef<HTMLInputElement>(null);
-    const inputPass2Ref = useRef<HTMLInputElement>(null);
-    const inputGenderRef = useRef<HTMLSelectElement>(null);
-    const inputCountryRef = useRef<HTMLSelectElement>(null);
-    const inputPictureRef = useRef<HTMLInputElement>(null);
-    const inputTaCRef = useRef<HTMLInputElement>(null);
 
-
-    const [checkErrors, setCheckErrors] = useState<ErrorOutput[]>([]);
-
-
-
-    function renderGenderSelector(inputGenderRef: RefObject<HTMLSelectElement>): React.ReactNode {
+    function renderGenderSelector(): React.ReactNode {
         const opt = genders.list.map(({key, value}, index) =>
             <option key={index} value={key}>{value}</option>
         );
 
         return (
-            <select ref={inputGenderRef}>
+            <select {...register("gender")}>
                 <option value={""}/>
                 {opt}
             </select>
         );
     }
 
-    function renderCountrySelector(inputCountryRef: RefObject<HTMLSelectElement>): React.ReactNode {
+    function renderCountrySelector(): React.ReactNode {
         const opt = counties.list.map(({key, value}, index) =>
             <option key={index} value={key}>{value}</option>
         );
 
         return (
-            <select ref={inputCountryRef}>
+            <select {...register("country")}>
                 <option value={""}/>
                 {opt}
             </select>
@@ -63,34 +53,11 @@ export const UncontrolledForm: React.FC = () => {
     }
 
 
-    function renderErrors(err?: ValidationError) {
-        if (err && err.inner && err.inner.length) {
-            const res: ErrorOutput[] = [];
-
-            err.inner.forEach(i => {
-                let allErrorsInString = "";
-
-                if (i.errors && i.errors.length) {
-                    i.errors.forEach(e => allErrorsInString += e + ";");
-                }
-
-                if (allErrorsInString.length > 0) {
-                    res.push({
-                        fieldName: i.path ?? "",
-                        text: allErrorsInString
-                    })
-                }
-            })
-
-            setCheckErrors(res);
-        } else {
-            setCheckErrors([]);
-        }
-    }
 
 
-    async function submitHandle() {
-        const selectedFiles = inputPictureRef.current?.files;
+
+    function submitHandle() {
+    /*    const selectedFiles = inputPictureRef.current?.files;
         let selectedPicture;
         let selectedPictureName;
         let selectedSize;
@@ -139,55 +106,54 @@ export const UncontrolledForm: React.FC = () => {
         }, function(err: ValidationError) {
             console.log(err);
             renderErrors(err);
-        });
+        });*/
     }
+
 
 
     function cancelHandle() {
         navigate("..", {relative: "route"});
     }
 
-
     return (
         <div>
-            {checkErrors.length > 0 && <ListErrorsForUncontrolled errors={checkErrors} />}
             <form className={"form-box"}>
                 <label>
                     name
                 </label>
-                <input type="text" ref={inputNameRef} />
+                <input {...register("name")} />
                 <label>
                     age
                 </label>
-                <input type="number" ref={inputAgeRef} value="2" />
+                <input type="number" {...register("age")} />
                 <label>
                     email
                 </label>
-                <input type="text" ref={inputEmailRef} value="1@2.ru" />
+                <input {...register("email")} />
                 <label>
                     password
                 </label>
-                <input type="password" value="1!qQ" ref={inputPassRef} title={PASSW_HELP} placeholder={PASSW_HELP} />
+                <input type="password" {...register("password")} title={PASSW_HELP} placeholder={PASSW_HELP} />
                 <label>
                     password repeat
                 </label>
-                <input type="password" value="1!qQ" ref={inputPass2Ref} title={PASSW_HELP} placeholder={PASSW_HELP} />
+                <input type="password" {...register("passwordRepeat")} title={PASSW_HELP} placeholder={PASSW_HELP} />
                 <label>
                     gender
                 </label>
-                {renderGenderSelector(inputGenderRef)}
+                {renderGenderSelector()}
                 <label>
                     Accept Terms and Conditions agreement
                 </label>
-                <input type="checkbox" className={"checkbox-custom"} ref={inputTaCRef} />
+                <input type="checkbox" className={"checkbox-custom"} {...register("acceptedTaC")} />
                 <label>
                     Upload picture
                 </label>
-                <input type="file" accept=".png,.jpeg,.jpg" ref={inputPictureRef} />
+                <input type="file" accept=".png,.jpeg,.jpg" {...register("rawFile")} />
                 <label>
                     country
                 </label>
-                {renderCountrySelector(inputCountryRef)}
+                {renderCountrySelector()}
             </form>
             <div>
                 <button type="button" style={{width: "120px"}} onClick={submitHandle}>Submit</button>
@@ -196,5 +162,3 @@ export const UncontrolledForm: React.FC = () => {
         </div>
     );
 }
-
-

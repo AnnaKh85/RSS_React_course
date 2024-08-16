@@ -16,7 +16,7 @@ function App() {
                         <NavLink to={"/uncontrolled.components.form"}>Uncontrolled components</NavLink>
                     </li>
                     <li>
-                        <NavLink to={"/react.hook.form.components.form"}>React Hook Form</NavLink>
+                        <NavLink to={"/react.hook.forms.components.form"}>React Hook Forms</NavLink>
                     </li>
                 </ol>
             </nav>
