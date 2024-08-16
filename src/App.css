@@ -119,7 +119,7 @@ i {
 }
 
 #sidebar li {
-  margin: 0.25rem 0;
+  margin: 0.1rem 0;
 }
 
 #sidebar nav a {
@@ -173,6 +173,7 @@ i {
   /*padding: 5vw;*/
   position: relative;
   /* position:relative for .prevBtn and .nextBtn position:absolute; */
+  padding-bottom: 20px;
 }
 
 .form-box label {
@@ -187,8 +188,19 @@ i {
   display: inline;
   width: 100%;
   padding: 0.5rem 0.8rem 0.5rem 0.8rem;
-  margin: 0.9vw 0;
   border-radius: 3px;
   font-size: 14px;
+  text-align: left;
+}
+
+.form-box input.checkbox-custom {
+  width: auto;
+}
+
+ul.validation-block {
+  background-color: #fa8484;
+}
+
+ul.validation-block li {
   text-align: left;
 }

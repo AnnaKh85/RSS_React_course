@@ -1,4 +1,4 @@
-import React, {useRef, RefObject} from "react";
+import React, {useRef, RefObject, useState} from "react";
 import {useAppSelector, useAppDispatch} from "../../store/hooks";
 import {Person} from "../../types/main_types";
 import personSchema from "../../types/validator.yap";
@@ -6,6 +6,8 @@ import {toBase64} from "../../utils/convert";
 import {insertPerson} from "../../store/parts/personsSlice";
 import {useNavigate} from "react-router";
 import {nextSeq} from "../../store/parts/personsSeqSlice";
+import {ListErrorsForUncontrolled, ErrorOutput} from "./ListErrorsForUncontrolled";
+import {ValidationError} from "yup";
 
 export const UncontrolledForm: React.FC = () => {
     const navigate = useNavigate();
@@ -27,6 +29,10 @@ export const UncontrolledForm: React.FC = () => {
     const inputCountryRef = useRef<HTMLSelectElement>(null);
     const inputPictureRef = useRef<HTMLInputElement>(null);
     const inputTaCRef = useRef<HTMLInputElement>(null);
+
+
+    const [checkErrors, setCheckErrors] = useState<ErrorOutput[]>([]);
+
 
 
     function renderGenderSelector(inputGenderRef: RefObject<HTMLSelectElement>): React.ReactNode {
@@ -56,6 +62,30 @@ export const UncontrolledForm: React.FC = () => {
     }
 
 
+    function renderErrors(err?: ValidationError) {
+        if (err && err.inner && err.inner.length) {
+            const res: ErrorOutput[] = [];
+
+            err.inner.forEach(i => {
+                let allErrorsInString = "";
+
+                if (i.errors && i.errors.length) {
+                    i.errors.forEach(e => allErrorsInString += e + ";");
+                }
+
+                if (allErrorsInString.length > 0) {
+                    res.push({
+                        fieldName: i.path ?? "",
+                        text: allErrorsInString
+                    })
+                }
+            })
+
+            setCheckErrors(res);
+        } else {
+            setCheckErrors([]);
+        }
+    }
 
 
     async function submitHandle() {
@@ -100,12 +130,14 @@ export const UncontrolledForm: React.FC = () => {
 
         personSchema.validate(pers, {abortEarly: false, stripUnknown: true}).then(function(data) {
             console.log(data);
+            renderErrors(undefined);
 
             dispatch(insertPerson(data));
 
             navigate("..", {relative: "route"});
-        }, function(err) {
+        }, function(err: ValidationError) {
             console.log(err);
+            renderErrors(err);
         });
     }
 
@@ -115,8 +147,12 @@ export const UncontrolledForm: React.FC = () => {
     }
 
 
+    const PASSW_HELP = "1 number, 1 uppercased letter, 1 lowercased letter, 1 special character)";
+
+
     return (
         <div>
+            {checkErrors.length > 0 && <ListErrorsForUncontrolled errors={checkErrors} />}
             <form className={"form-box"}>
                 <label>
                     name
@@ -133,11 +169,11 @@ export const UncontrolledForm: React.FC = () => {
                 <label>
                     password
                 </label>
-                <input type="password" value="1!qQ" ref={inputPassRef} title="1 number, 1 uppercased letter, 1 lowercased letter, 1 special character)" />
+                <input type="password" value="1!qQ" ref={inputPassRef} title={PASSW_HELP} placeholder={PASSW_HELP} />
                 <label>
                     password repeat
                 </label>
-                <input type="password" value="1!qQ" ref={inputPass2Ref} title="1 number, 1 uppercased letter, 1 lowercased letter, 1 special character)" />
+                <input type="password" value="1!qQ" ref={inputPass2Ref} title={PASSW_HELP} placeholder={PASSW_HELP} />
                 <label>
                     gender
                 </label>
@@ -145,7 +181,7 @@ export const UncontrolledForm: React.FC = () => {
                 <label>
                     Accept Terms and Conditions agreement
                 </label>
-                <input type="checkbox" ref={inputTaCRef} />
+                <input type="checkbox" className={"checkbox-custom"} ref={inputTaCRef} />
                 <label>
                     Upload picture
                 </label>

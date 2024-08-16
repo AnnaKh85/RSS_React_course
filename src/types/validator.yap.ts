@@ -13,7 +13,7 @@ function isFirstLetterBig(test: string): boolean {
         return c === c.toUpperCase();
     }
 
-    return false;
+    return true;
 }
 
 function isPasswordStrength(test: string): boolean {
@@ -57,9 +57,9 @@ export function isFileTooBig(test: AnyObject): boolean {
 const personSchema = yup.object().shape({
     id: yup.number(),
     name: yup.string()
-        .min(1)
+        // .min(1)
         .max(100)
-        .nonNullable("name is empty")
+        // .nonNullable("name is empty")
         .required("name is empty")
         .test("isCheckFirstBigLetter", "First letter is not capital", isFirstLetterBig),
     age: yup.number()
