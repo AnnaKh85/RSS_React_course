@@ -77,10 +77,17 @@ export const UncontrolledForm: React.FC = () => {
                 }
 
                 if (allErrorsInString.length > 0) {
-                    res.push({
-                        fieldName: i.path ?? "",
-                        text: allErrorsInString
-                    })
+
+                    if (i.path === 'picture.data') {
+                        //ok. грязный хак
+                    } else {
+
+                        res.push({
+                            fieldName: i.path ?? "",
+                            text: allErrorsInString
+                        })
+
+                    }
                 }
             })
 

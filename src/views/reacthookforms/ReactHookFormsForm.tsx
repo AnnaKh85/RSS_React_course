@@ -19,7 +19,12 @@ export const ReactHookFormsForm: React.FC = () => {
         defaultValues: {
             password: "1!qQ",
             passwordRepeat: "1!qQ",
-            acceptedTaC: YesNo.N
+            acceptedTaC: YesNo.N,
+            picture: {
+                name: "",
+                data: "",
+                size: 0
+            }
         },
         mode: "onChange"
     });
