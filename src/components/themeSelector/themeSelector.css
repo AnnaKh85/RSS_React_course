@@ -1,0 +1,29 @@
+.theme-selector {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    align-self: flex-end;
+    flex-direction: row;
+}
+
+.theme-selector label {
+    margin-right: 10px;
+    font-size: 1em;
+    color: #333;
+}
+
+.theme-selector select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+.theme-selector select:focus {
+    border-color: #646cff;
+    outline: none;
+}
