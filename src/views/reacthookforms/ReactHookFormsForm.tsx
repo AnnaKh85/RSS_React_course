@@ -1,11 +1,11 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useForm, Controller} from "react-hook-form";
 import {useNavigate} from "react-router";
 import {useAppDispatch, useAppSelector} from "../../store/hooks";
 import {PASSW_HELP} from "../../types/validation.const";
 import {yupResolver} from "@hookform/resolvers/yup";
 import personSchema from "../../types/validator.yap";
-import {YesNo, Gender, parseYesNo, Picture, Person} from "../../types/main_types";
+import {YesNo, parseYesNo, Picture, Person} from "../../types/main_types";
 import {toBase64} from "../../utils/convert";
 import {insertPerson} from "../../store/parts/personsSlice";
 import {nextSeq} from "../../store/parts/personsSeqSlice";
@@ -17,14 +17,11 @@ export const ReactHookFormsForm: React.FC = () => {
     const {register, trigger, formState: {errors, isValid}, getValues, setValue, control } = useForm({
         resolver: yupResolver(personSchema),
         defaultValues: {
-            country: "JM",
-            gender: Gender.F,
-            age: 3,
-            email: "1@2.ru",
             password: "1!qQ",
             passwordRepeat: "1!qQ",
             acceptedTaC: YesNo.N
-        }
+        },
+        mode: "onChange"
     });
 
     const genders = useAppSelector(state => state.genders);
@@ -41,7 +38,7 @@ export const ReactHookFormsForm: React.FC = () => {
         );
 
         return (
-            <select {...register("gender")}>
+            <select {...register("gender")} id="r.h.f.gender">
                 <option value={""}/>
                 {opt}
             </select>
@@ -54,7 +51,7 @@ export const ReactHookFormsForm: React.FC = () => {
         );
 
         return (
-            <select {...register("country")}>
+            <select {...register("country")}  id="r.h.f.country">
                 <option value={""}/>
                 {opt}
             </select>
@@ -64,15 +61,14 @@ export const ReactHookFormsForm: React.FC = () => {
 
 
     function submitHandle() {
-        trigger().then(function(data) {
-            console.log(data);
-            console.log(errors);
+        trigger().then(function() {
 
             if (isValid) {
                 const values = getValues();
                 addPerson(values);
                 navigate("..", {relative: "route"});
             }
+
         }, function(err) {
             console.log(err);
         });
@@ -123,35 +119,48 @@ export const ReactHookFormsForm: React.FC = () => {
         navigate("..", {relative: "route"});
     }
 
+
+    useEffect(function() {
+        trigger();
+    }, []);
+
+    const[fakeChangeFileValue, setFakeChangeFileValue] = useState<boolean>(false);
+    useEffect(function() {
+        trigger();
+    }, [fakeChangeFileValue]);
+
+
+
+
     return (
         <div>
             <form className={"form-box"}>
-                <label>
+                <label htmlFor="r.h.f.name">
                     name
                     <p className={"validation-block"}>{errors.name?.message}</p>
                 </label>
-                <input {...register("name")} />
-                <label>
+                <input {...register("name")} id="r.h.f.name" />
+                <label htmlFor="r.h.f.age">
                     age
                     <p className={"validation-block"}>{errors.age?.message}</p>
                 </label>
-                <input type="number" {...register("age")} />
-                <label>
+                <input type="number" {...register("age")} id="r.h.f.age" />
+                <label htmlFor="r.h.f.email">
                     email
                     <p className={"validation-block"}>{errors.email?.message}</p>
                 </label>
-                <input {...register("email")} />
-                <label>
+                <input {...register("email")} id="r.h.f.email" />
+                <label htmlFor="r.h.f.pass1">
                     password
                     <p className={"validation-block"}>{errors.password?.message}</p>
                 </label>
-                <input type="password" {...register("password")} title={PASSW_HELP} placeholder={PASSW_HELP} />
-                <label>
+                <input type="password" {...register("password")} title={PASSW_HELP} placeholder={PASSW_HELP} id="r.h.f.pass1" />
+                <label htmlFor="r.h.f.pass2">
                     password repeat
                     <p className={"validation-block"}>{errors.passwordRepeat?.message}</p>
                 </label>
-                <input type="password" {...register("passwordRepeat")} title={PASSW_HELP} placeholder={PASSW_HELP} />
-                <label>
+                <input type="password" {...register("passwordRepeat")} title={PASSW_HELP} placeholder={PASSW_HELP} id="r.h.f.pass2" />
+                <label htmlFor="r.h.f.gender">
                     gender
                     <p className={"validation-block"}>{errors.gender?.message}</p>
                 </label>
@@ -189,11 +198,13 @@ export const ReactHookFormsForm: React.FC = () => {
                                 setValue("picture.name", data.name);
                                 setValue("picture.data", data.data);
                                 setValue("picture.size", data.size);
+
+                                setFakeChangeFileValue((v) => !v);
                             })
                         }
                     })}
                 />
-                <label>
+                <label htmlFor="r.h.f.country">
                     country
                     <p className={"validation-block"}>{errors.country?.message}</p>
                 </label>

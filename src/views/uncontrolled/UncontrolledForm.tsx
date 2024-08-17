@@ -10,6 +10,8 @@ import {ListErrorsForUncontrolled, ErrorOutput} from "./ListErrorsForUncontrolle
 import {ValidationError} from "yup";
 import {PASSW_HELP} from "../../types/validation.const";
 
+
+
 export const UncontrolledForm: React.FC = () => {
     const navigate = useNavigate();
 
@@ -42,7 +44,7 @@ export const UncontrolledForm: React.FC = () => {
         );
 
         return (
-            <select ref={inputGenderRef}>
+            <select ref={inputGenderRef} id="u.f.gender" >
                 <option value={""}/>
                 {opt}
             </select>
@@ -55,7 +57,7 @@ export const UncontrolledForm: React.FC = () => {
         );
 
         return (
-            <select ref={inputCountryRef}>
+            <select ref={inputCountryRef} id="u.f.country" >
                 <option value={""}/>
                 {opt}
             </select>
@@ -130,7 +132,6 @@ export const UncontrolledForm: React.FC = () => {
         };
 
         personSchema.validate(pers, {abortEarly: false, stripUnknown: true}).then(function(data) {
-            console.log(data);
             renderErrors(undefined);
 
             dispatch(insertPerson(data));
@@ -152,27 +153,27 @@ export const UncontrolledForm: React.FC = () => {
         <div>
             {checkErrors.length > 0 && <ListErrorsForUncontrolled errors={checkErrors} />}
             <form className={"form-box"}>
-                <label>
+                <label htmlFor="u.f.name">
                     name
                 </label>
-                <input type="text" ref={inputNameRef} />
-                <label>
+                <input type="text" ref={inputNameRef} id="u.f.name" />
+                <label htmlFor="u.f.age">
                     age
                 </label>
-                <input type="number" ref={inputAgeRef} defaultValue="2" />
-                <label>
+                <input type="number" ref={inputAgeRef} id="u.f.age"/>
+                <label htmlFor="u.f.email">
                     email
                 </label>
-                <input type="text" ref={inputEmailRef} defaultValue="1@2.ru" />
-                <label>
+                <input type="text" ref={inputEmailRef} id="u.f.email" />
+                <label htmlFor="u.f.pass1">
                     password
                 </label>
-                <input type="password" defaultValue="1!qQ" ref={inputPassRef} title={PASSW_HELP} placeholder={PASSW_HELP} />
-                <label>
+                <input type="password" defaultValue="1!qQ" ref={inputPassRef} title={PASSW_HELP} placeholder={PASSW_HELP} id="u.f.pass1" />
+                <label htmlFor="u.f.pass2">
                     password repeat
                 </label>
-                <input type="password" defaultValue="1!qQ" ref={inputPass2Ref} title={PASSW_HELP} placeholder={PASSW_HELP} />
-                <label>
+                <input type="password" defaultValue="1!qQ" ref={inputPass2Ref} title={PASSW_HELP} placeholder={PASSW_HELP} id="u.f.pass2" />
+                <label htmlFor="u.f.gender">
                     gender
                 </label>
                 {renderGenderSelector(inputGenderRef)}
@@ -184,7 +185,7 @@ export const UncontrolledForm: React.FC = () => {
                     Upload picture
                 </label>
                 <input type="file" accept=".png,.jpeg,.jpg" ref={inputPictureRef} />
-                <label>
+                <label htmlFor="u.f.country">
                     country
                 </label>
                 {renderCountrySelector(inputCountryRef)}

@@ -121,7 +121,7 @@ const personSchema = yup.object<Person>().shape({
     country: yup.string()
         .required(),
     picture: yup.object({
-        name: yup.string().required("File not selected"),
+        name: yup.string().required("File not selected (< 1 Mb)"),
         data: yup.string().required(),
         size: yup.number().required().typeError(""),
         rawFile: yup.mixed()

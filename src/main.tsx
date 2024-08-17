@@ -9,6 +9,7 @@ import {UncontrolledForm} from "./views/uncontrolled/UncontrolledForm";
 import {Provider} from "react-redux";
 import {store} from "./store/store";
 import {ReactHookFormsForm} from "./views/reacthookforms/ReactHookFormsForm";
+import {About} from "./views/about/About";
 
 
 
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/about",
-                element: "React Forms v1 (August 2024)"
+                element: <About />
             },
             {
                 path: "/uncontrolled.components.form",
